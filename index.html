@@ -65,23 +65,39 @@
   <div class="date-area">
     <label for="datePicker">날짜 선택: </label>
     <input type="date" id="datePicker">
-    <label for="teacherSelect">선생님 선택: </label>
-    <select id="teacherSelect">
-      <option>이름</option>
-      <option>경희</option>
-      <option>안나</option>
-      <option>카라</option>
-      <option>키르케</option>
-    </select>
   </div>
   <table id="orderTable">
     <thead>
       <tr id="nameRow">
         <th>순서</th>
-        <th class="name">경희</th>
-        <th class="name">안나</th>
-        <th class="name">카라</th>
-        <th class="name">키르케</th>
+        <th><select class="name">
+          <option>이름</option>
+          <option>경희</option>
+          <option>안나</option>
+          <option>카라</option>
+          <option>키르케</option>
+        </select></th>
+        <th><select class="name">
+          <option>이름</option>
+          <option>경희</option>
+          <option>안나</option>
+          <option>카라</option>
+          <option>키르케</option>
+        </select></th>
+        <th><select class="name">
+          <option>이름</option>
+          <option>경희</option>
+          <option>안나</option>
+          <option>카라</option>
+          <option>키르케</option>
+        </select></th>
+        <th><select class="name">
+          <option>이름</option>
+          <option>경희</option>
+          <option>안나</option>
+          <option>카라</option>
+          <option>키르케</option>
+        </select></th>
       </tr>
     </thead>
     <tbody id="tableBody"></tbody>
@@ -94,14 +110,17 @@
     const activeTeachers = [false, false, false, false];
 
     // 드롭다운 선택 시 적용
-    document.getElementById("teacherSelect").addEventListener("change", function () {
-      const selected = this.value;
-      nameRow.querySelectorAll(".name").forEach((cell, idx) => {
-        const isMatch = cell.textContent === selected;
-        activeTeachers[idx] = isMatch;
-        cell.classList.toggle("selected", isMatch);
+    nameRow.querySelectorAll("select.name").forEach((select, idx) => {
+      select.addEventListener("change", function () {
+        const value = this.value;
+        activeTeachers[idx] = (value !== "이름");
+        if (value !== "이름") {
+          this.classList.add("selected");
+        } else {
+          this.classList.remove("selected");
+        }
+        updateScores();
       });
-      updateScores();
     });
 
     function createTable(rows = 40) {
@@ -151,10 +170,14 @@
           if (scoreMap[cls] && activeTeachers[i]) scores[i] += scoreMap[cls];
         }
       }
-      for (let i = 1; i <= 4; i++) {
-        const name = nameRow.cells[i].textContent.split("(")[0].trim();
-        nameRow.cells[i].textContent = `${name} (${scores[i - 1]}점)`;
-      }
+      nameRow.querySelectorAll("select.name").forEach((select, i) => {
+        const base = select.value;
+        if (base !== "이름") {
+          select.options[0].textContent = `${base} (${scores[i]}점)`;
+        } else {
+          select.options[0].textContent = "이름";
+        }
+      });
     }
 
     document.getElementById("datePicker").valueAsDate = new Date();
