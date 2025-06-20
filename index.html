@@ -74,7 +74,7 @@
         <th>순서</th>
         <th class="name">경희</th>
         <th class="name">안나</th>
-        <th class="name">예림</th>
+        <th class="name">카라</th>
         <th class="name">키르케</th>
       </tr>
     </thead>
@@ -116,13 +116,26 @@
     }
 
     function toggleType(cell) {
-      const row = parseInt(cell.dataset.row);
-      const col = parseInt(cell.dataset.col);
-      for (let i = 0; i < 4; i++) {
-        if (i !== col) {
-          const other = tableBody.rows[row].cells[i + 1];
-          if (other.className !== "") return;
-        }
+  const row = parseInt(cell.dataset.row);
+  const col = parseInt(cell.dataset.col);
+
+  if (!activeTeachers[col]) return; // 출근하지 않은 선생님은 클릭 불가
+
+  for (let i = 0; i < 4; i++) {
+    if (i !== col) {
+      const other = tableBody.rows[row].cells[i + 1];
+      if (other.className !== "") return;
+    }
+  }
+
+  const states = ["", "general", "designated", "reserved"];
+  const current = cell.className;
+  const next = states[(states.indexOf(current) + 1) % states.length];
+  cell.className = next;
+  cell.textContent = next === "" ? "" : (next === "general" ? "일반" : next === "designated" ? "지명" : "예약");
+  updateScores();
+  expandTable();
+}
       }
       const states = ["", "general", "designated", "reserved"];
       const current = cell.className;
@@ -148,12 +161,7 @@
       updateNextBlink(scores);
     }
 
-    function updateNextBlink(scores) {
-      for (let row of tableBody.rows) {
-        for (let i = 1; i <= 4; i++) {
-          row.cells[i].classList.remove("blink");
-        }
-      }
+          }
       const queue = scores.map((score, idx) => ({ idx, score })).filter(t => activeTeachers[t.idx]);
       queue.sort((a, b) => a.score - b.score);
       for (let row of tableBody.rows) {
