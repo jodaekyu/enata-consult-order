@@ -156,6 +156,7 @@
         activeTeachers[idx] = (value !== "이름");
         this.classList.toggle("selected", value !== "이름");
         updateScores();
+        updateNextSuggestions();
       });
     });
 
@@ -175,6 +176,7 @@
         }
         tableBody.appendChild(tr);
       }
+      updateNextSuggestions();
     }
 
     function toggleType(cell) {
@@ -196,6 +198,7 @@
       cell.className = next;
       cell.textContent = next === "" ? "" : (next === "general" ? "일반" : next === "designated" ? "지명" : "예약");
       updateScores();
+      updateNextSuggestions();
     }
 
     function updateScores() {
@@ -214,6 +217,39 @@
           scoreSpan.textContent = "";
         }
       });
+    }
+
+    function updateNextSuggestions() {
+      const scores = [0, 0, 0, 0];
+      for (let row of tableBody.rows) {
+        for (let i = 0; i < 4; i++) {
+          const cls = row.cells[i + 1].className;
+          if (scoreMap[cls] && activeTeachers[i]) scores[i] += scoreMap[cls];
+        }
+      }
+
+      for (let i = 0; i < tableBody.rows.length; i++) {
+        const row = tableBody.rows[i];
+        const th = row.cells[0];
+        let isFilled = false;
+        for (let j = 1; j <= 4; j++) {
+          if (row.cells[j].className !== "") {
+            isFilled = true;
+            break;
+          }
+        }
+        if (!isFilled) {
+          const active = scores.map((score, idx) => ({ idx, score }))
+                               .filter(t => activeTeachers[t.idx])
+                               .sort((a, b) => a.score - b.score);
+          if (active.length > 0) {
+            th.textContent = nameRow.querySelectorAll("select.name")[active[0].idx].value;
+          }
+          break;
+        } else {
+          th.textContent = i + 1;
+        }
+      }
     }
 
     document.getElementById("datePicker").valueAsDate = new Date();
