@@ -129,7 +129,7 @@
       cell.className = next;
       cell.textContent = next === "" ? "" : (next === "general" ? "일반" : next === "designated" ? "지명" : "예약");
       updateScores();
-      
+      expandTable();
     }
 
     function updateScores() {
@@ -145,6 +145,13 @@
         nameRow.cells[i].textContent = `${name} (${scores[i - 1]}점)`;
       }
     }
+
+    function expandTable() {
+      let filled = 0;
+      for (let row of tableBody.rows) {
+        for (let i = 1; i <= 4; i++) {
+          if (row.cells[i].className !== "") filled++;
+        }
       }
       const filledRows = Math.floor(filled / 4);
       let limit = 10;
