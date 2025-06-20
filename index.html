@@ -38,9 +38,9 @@
     th {
       background-color: #eaeaea;
     }
-    td.name {
-      background-color: #fff8dc;
-      cursor: text;
+    .active {
+      background-color: #999 !important;
+      color: white;
     }
     .general {
       background-color: #4CAF50;
@@ -72,10 +72,10 @@
     <thead>
       <tr id="nameRow">
         <th>순서</th>
-        <th contenteditable="true" class="name">이름</th>
-        <th contenteditable="true" class="name">이름</th>
-        <th contenteditable="true" class="name">이름</th>
-        <th contenteditable="true" class="name">이름</th>
+        <th class="name">경희</th>
+        <th class="name">안나</th>
+        <th class="name">예림</th>
+        <th class="name">키르케</th>
       </tr>
     </thead>
     <tbody id="tableBody"></tbody>
@@ -83,9 +83,19 @@
 
   <script>
     const tableBody = document.getElementById("tableBody");
-    const maxRows = 50;
     const nameRow = document.getElementById("nameRow");
+    const maxRows = 50;
     const scoreMap = { general: 1, designated: 1, reserved: 0.5 };
+    const activeTeachers = [false, false, false, false];
+
+    nameRow.querySelectorAll(".name").forEach((cell, idx) => {
+      cell.style.cursor = "pointer";
+      cell.addEventListener("click", () => {
+        activeTeachers[idx] = !activeTeachers[idx];
+        cell.classList.toggle("active", activeTeachers[idx]);
+        updateScores();
+      });
+    });
 
     function createTable(rows = 10) {
       tableBody.innerHTML = "";
@@ -108,15 +118,12 @@
     function toggleType(cell) {
       const row = parseInt(cell.dataset.row);
       const col = parseInt(cell.dataset.col);
-
-      // 같은 줄에 다른 셀이 이미 입력되어 있으면 클릭 불가
       for (let i = 0; i < 4; i++) {
         if (i !== col) {
           const other = tableBody.rows[row].cells[i + 1];
           if (other.className !== "") return;
         }
       }
-
       const states = ["", "general", "designated", "reserved"];
       const current = cell.className;
       const next = states[(states.indexOf(current) + 1) % states.length];
@@ -131,12 +138,12 @@
       for (let row of tableBody.rows) {
         for (let i = 0; i < 4; i++) {
           const cls = row.cells[i + 1].className;
-          if (scoreMap[cls]) scores[i] += scoreMap[cls];
+          if (scoreMap[cls] && activeTeachers[i]) scores[i] += scoreMap[cls];
         }
       }
       for (let i = 1; i <= 4; i++) {
-        const name = nameRow.cells[i].innerText.split("(")[0].trim() || "이름";
-        nameRow.cells[i].innerText = `${name} (${scores[i - 1]}점)`;
+        const name = nameRow.cells[i].textContent.split("(")[0].trim();
+        nameRow.cells[i].textContent = `${name} (${scores[i - 1]}점)`;
       }
       updateNextBlink(scores);
     }
@@ -147,7 +154,7 @@
           row.cells[i].classList.remove("blink");
         }
       }
-      const queue = scores.map((score, idx) => ({ idx, score }));
+      const queue = scores.map((score, idx) => ({ idx, score })).filter(t => activeTeachers[t.idx]);
       queue.sort((a, b) => a.score - b.score);
       for (let row of tableBody.rows) {
         for (let q of queue) {
