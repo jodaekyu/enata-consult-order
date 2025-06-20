@@ -110,11 +110,11 @@
           td.dataset.row = i;
           td.dataset.col = j;
           td.addEventListener("click", () => {
-            if (td.classList.contains("blink")) {
-              td.classList.remove("blink");
-              currentBlinkCell = null;
-              toggleType(td);
-            } else if (!td.classList.contains("blink") && td.className !== "") {
+            if (currentBlinkCell === td || td.classList.length > 0) {
+              if (td.classList.contains("blink")) {
+                td.classList.remove("blink");
+                currentBlinkCell = null;
+              }
               toggleType(td);
             }
           });
@@ -159,6 +159,7 @@
 
     function updateNextBlink(scores) {
       if (currentBlinkCell) currentBlinkCell.classList.remove("blink");
+      currentBlinkCell = null;
 
       const queue = scores.map((score, idx) => ({ idx, score })).filter(t => activeTeachers[t.idx]);
       queue.sort((a, b) => a.score - b.score);
