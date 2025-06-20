@@ -54,12 +54,6 @@
       background-color: #2196F3;
       color: white;
     }
-    .blink {
-      animation: blink 1s step-start infinite;
-    }
-    @keyframes blink {
-      50% { background-color: #ffff99; }
-    }
   </style>
 </head>
 <body>
@@ -74,7 +68,7 @@
         <th>순서</th>
         <th class="name">경희</th>
         <th class="name">안나</th>
-        <th class="name">예림</th>
+        <th class="name">카라</th>
         <th class="name">키르케</th>
       </tr>
     </thead>
@@ -84,7 +78,6 @@
   <script>
     const tableBody = document.getElementById("tableBody");
     const nameRow = document.getElementById("nameRow");
-    const maxRows = 50;
     const scoreMap = { general: 1, designated: 1, reserved: 0.5 };
     const activeTeachers = [false, false, false, false];
 
@@ -98,8 +91,8 @@
     });
 
     function createTable(rows = 10) {
-      const existingRows = tableBody.rows.length;
-      for (let i = existingRows; i < rows; i++) {
+      tableBody.innerHTML = "";
+      for (let i = 0; i < rows; i++) {
         const tr = document.createElement("tr");
         const th = document.createElement("th");
         th.textContent = i + 1;
@@ -118,12 +111,23 @@
     function toggleType(cell) {
       const row = parseInt(cell.dataset.row);
       const col = parseInt(cell.dataset.col);
+
+      if (!activeTeachers[col]) return;
+
+      // Prevent other teachers from writing in the same row
       for (let i = 0; i < 4; i++) {
         if (i !== col) {
           const other = tableBody.rows[row].cells[i + 1];
           if (other.className !== "") return;
         }
       }
+
+      // Prevent duplicate slot assignment
+      for (let r = 0; r < tableBody.rows.length; r++) {
+        const existing = tableBody.rows[r].cells[col + 1];
+        if (existing.className !== "" && r < row) return;
+      }
+
       const states = ["", "general", "designated", "reserved"];
       const current = cell.className;
       const next = states[(states.indexOf(current) + 1) % states.length];
@@ -144,26 +148,6 @@
       for (let i = 1; i <= 4; i++) {
         const name = nameRow.cells[i].textContent.split("(")[0].trim();
         nameRow.cells[i].textContent = `${name} (${scores[i - 1]}점)`;
-      }
-      updateNextBlink(scores);
-    }
-
-    function updateNextBlink(scores) {
-      for (let row of tableBody.rows) {
-        for (let i = 1; i <= 4; i++) {
-          row.cells[i].classList.remove("blink");
-        }
-      }
-      const queue = scores.map((score, idx) => ({ idx, score })).filter(t => activeTeachers[t.idx]);
-      queue.sort((a, b) => a.score - b.score);
-      for (let q of queue) {
-        for (let row of tableBody.rows) {
-          const targetCell = row.cells[q.idx + 1];
-          if (targetCell.className === "") {
-            targetCell.classList.add("blink");
-            return;
-          }
-        }
       }
     }
 
