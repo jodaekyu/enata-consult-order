@@ -90,7 +90,7 @@
       });
     });
 
-    function createTable(rows = 10) {
+    function createTable(rows = 40) {
       tableBody.innerHTML = "";
       for (let i = 0; i < rows; i++) {
         const tr = document.createElement("tr");
@@ -129,7 +129,7 @@
       cell.className = next;
       cell.textContent = next === "" ? "" : (next === "general" ? "일반" : next === "designated" ? "지명" : "예약");
       updateScores();
-      expandTable();
+      
     }
 
     function updateScores() {
@@ -145,13 +145,6 @@
         nameRow.cells[i].textContent = `${name} (${scores[i - 1]}점)`;
       }
     }
-
-    function expandTable() {
-      let filled = 0;
-      for (let row of tableBody.rows) {
-        for (let i = 1; i <= 4; i++) {
-          if (row.cells[i].className !== "") filled++;
-        }
       }
       const filledRows = Math.floor(filled / 4);
       let limit = 10;
@@ -163,7 +156,7 @@
     }
 
     document.getElementById("datePicker").valueAsDate = new Date();
-    createTable(10);
+    createTable(40);
   </script>
 </body>
 </html>
