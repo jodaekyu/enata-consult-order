@@ -110,7 +110,7 @@
           td.dataset.row = i;
           td.dataset.col = j;
           td.addEventListener("click", () => {
-            if (currentBlinkCell === td || td.classList.length > 0) {
+            if (td === currentBlinkCell || td.className) {
               if (td.classList.contains("blink")) {
                 td.classList.remove("blink");
                 currentBlinkCell = null;
@@ -152,7 +152,7 @@
       }
       for (let i = 1; i <= 4; i++) {
         const name = nameRow.cells[i].textContent.split("(")[0].trim();
-        nameRow.cells[i].textContent = `${name} (${scores[i - 1]}점)`;
+        nameRow.cells[i].textContent = `${name} (${scores[i - 1]})점`;
       }
       updateNextBlink(scores);
     }
@@ -163,8 +163,9 @@
 
       const queue = scores.map((score, idx) => ({ idx, score })).filter(t => activeTeachers[t.idx]);
       queue.sort((a, b) => a.score - b.score);
-      for (let q of queue) {
-        for (let row of tableBody.rows) {
+
+      for (let row of tableBody.rows) {
+        for (let q of queue) {
           const targetCell = row.cells[q.idx + 1];
           if (targetCell.className === "") {
             targetCell.classList.add("blink");
