@@ -58,6 +58,12 @@
       background-color: #2196F3;
       color: white;
     }
+    .score {
+      font-size: 14px;
+      color: #333;
+      display: block;
+      margin-top: 4px;
+    }
   </style>
 </head>
 <body>
@@ -70,34 +76,46 @@
     <thead>
       <tr id="nameRow">
         <th>순서</th>
-        <th><select class="name">
-          <option>이름</option>
-          <option>경희</option>
-          <option>안나</option>
-          <option>카라</option>
-          <option>키르케</option>
-        </select></th>
-        <th><select class="name">
-          <option>이름</option>
-          <option>경희</option>
-          <option>안나</option>
-          <option>카라</option>
-          <option>키르케</option>
-        </select></th>
-        <th><select class="name">
-          <option>이름</option>
-          <option>경희</option>
-          <option>안나</option>
-          <option>카라</option>
-          <option>키르케</option>
-        </select></th>
-        <th><select class="name">
-          <option>이름</option>
-          <option>경희</option>
-          <option>안나</option>
-          <option>카라</option>
-          <option>키르케</option>
-        </select></th>
+        <th>
+          <select class="name">
+            <option>이름</option>
+            <option>경희</option>
+            <option>안나</option>
+            <option>카라</option>
+            <option>키르케</option>
+          </select>
+          <span class="score"></span>
+        </th>
+        <th>
+          <select class="name">
+            <option>이름</option>
+            <option>경희</option>
+            <option>안나</option>
+            <option>카라</option>
+            <option>키르케</option>
+          </select>
+          <span class="score"></span>
+        </th>
+        <th>
+          <select class="name">
+            <option>이름</option>
+            <option>경희</option>
+            <option>안나</option>
+            <option>카라</option>
+            <option>키르케</option>
+          </select>
+          <span class="score"></span>
+        </th>
+        <th>
+          <select class="name">
+            <option>이름</option>
+            <option>경희</option>
+            <option>안나</option>
+            <option>카라</option>
+            <option>키르케</option>
+          </select>
+          <span class="score"></span>
+        </th>
       </tr>
     </thead>
     <tbody id="tableBody"></tbody>
@@ -109,16 +127,11 @@
     const scoreMap = { general: 1, designated: 1, reserved: 0.5 };
     const activeTeachers = [false, false, false, false];
 
-    // 드롭다운 선택 시 적용
     nameRow.querySelectorAll("select.name").forEach((select, idx) => {
       select.addEventListener("change", function () {
         const value = this.value;
         activeTeachers[idx] = (value !== "이름");
-        if (value !== "이름") {
-          this.classList.add("selected");
-        } else {
-          this.classList.remove("selected");
-        }
+        this.classList.toggle("selected", value !== "이름");
         updateScores();
       });
     });
@@ -170,12 +183,12 @@
           if (scoreMap[cls] && activeTeachers[i]) scores[i] += scoreMap[cls];
         }
       }
-      nameRow.querySelectorAll("select.name").forEach((select, i) => {
-        const base = select.value;
-        if (base !== "이름") {
-          select.options[0].textContent = `${base} (${scores[i]}점)`;
-        } else {
-          select.options[0].textContent = "이름";
+      nameRow.querySelectorAll("th").forEach((th, i) => {
+        const scoreSpan = th.querySelector(".score");
+        if (scoreSpan && activeTeachers[i - 1]) {
+          scoreSpan.textContent = `(${scores[i - 1]}점)`;
+        } else if (scoreSpan) {
+          scoreSpan.textContent = "";
         }
       });
     }
