@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>상담 순서표</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    h2 {
+      margin-bottom: 10px;
+    }
+    .date-box {
+      margin-bottom: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      width: 80px;
+      height: 40px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .cell {
+      cursor: pointer;
+    }
+    .일반 {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .지명 {
+      background-color: #F44336;
+      color: white;
+    }
+    .예약 {
+      background-color: #2196F3;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h2>상담 순서표 (실시간 공유)</h2>
+  <div class="date-box">
+    <input type="date" id="selectedDate" value="" onchange="updateDate()" />
+  </div>
+
+  <table id="scheduleTable">
+    <thead>
+      <tr>
+        <th>시간</th>
+        <th>안나</th>
+        <th>경희</th>
+        <th>키르케</th>
+        <th>카라</th>
+      </tr>
+    </thead>
+    <tbody id="scheduleBody"></tbody>
+  </table>
+
+  <script>
+    const 상담사들 = ["안나", "경희", "키르케", "카라"];
+    const 총칸수 = 17;
+
+    function createTable() {
+      const tbody = document.getElementById("scheduleBody");
+      tbody.innerHTML = "";
+
+      for (let i = 1; i <= 총칸수; i++) {
+        const row = document.createElement("tr");
+        const timeCell = document.createElement("td");
+        timeCell.textContent = i;
+        row.appendChild(timeCell);
+
+        상담사들.forEach(() => {
+          const cell = document.createElement("td");
+          cell.classList.add("cell");
+          cell.addEventListener("click", () => toggleType(cell));
+          row.appendChild(cell);
+        });
+        tbody.appendChild(row);
+      }
+    }
+
+    function toggleType(cell) {
+      const types = ["", "일반", "지명", "예약"];
+      const current = cell.innerText.trim();
+      const nextIndex = (types.indexOf(current) + 1) % types.length;
+      const next = types[nextIndex];
+      cell.innerText = next;
+      cell.classList.remove("일반", "지명", "예약");
+      if (next) cell.classList.add(next);
+    }
+
+    function updateDate() {
+      const selected = document.getElementById("selectedDate");
+      console.log("선택한 날짜:", selected.value);
+      // 이후 Firebase 연동 또는 날짜별 데이터 저장 연동 예정
+    }
+
+    // 기본 날짜 오늘로 설정
+    document.getElementById("selectedDate").value = new Date().toISOString().split('T')[0];
+    createTable();
+  </script>
+</body>
+</html>
