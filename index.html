@@ -63,6 +63,21 @@
       color: #333;
       display: block;
       margin-top: 4px;
+      white-space: nowrap;
+    }
+    .header-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 80px;
+    }
+    @media (max-width: 600px) {
+      .header-cell {
+        min-width: 60px;
+      }
+      .score {
+        font-size: 12px;
+      }
     }
   </style>
 </head>
@@ -77,44 +92,52 @@
       <tr id="nameRow">
         <th>순서</th>
         <th>
-          <select class="name">
-            <option>이름</option>
-            <option>경희</option>
-            <option>안나</option>
-            <option>카라</option>
-            <option>키르케</option>
-          </select>
-          <span class="score"></span>
+          <div class="header-cell">
+            <select class="name">
+              <option>이름</option>
+              <option>경희</option>
+              <option>안나</option>
+              <option>카라</option>
+              <option>키르케</option>
+            </select>
+            <span class="score"></span>
+          </div>
         </th>
         <th>
-          <select class="name">
-            <option>이름</option>
-            <option>경희</option>
-            <option>안나</option>
-            <option>카라</option>
-            <option>키르케</option>
-          </select>
-          <span class="score"></span>
+          <div class="header-cell">
+            <select class="name">
+              <option>이름</option>
+              <option>경희</option>
+              <option>안나</option>
+              <option>카라</option>
+              <option>키르케</option>
+            </select>
+            <span class="score"></span>
+          </div>
         </th>
         <th>
-          <select class="name">
-            <option>이름</option>
-            <option>경희</option>
-            <option>안나</option>
-            <option>카라</option>
-            <option>키르케</option>
-          </select>
-          <span class="score"></span>
+          <div class="header-cell">
+            <select class="name">
+              <option>이름</option>
+              <option>경희</option>
+              <option>안나</option>
+              <option>카라</option>
+              <option>키르케</option>
+            </select>
+            <span class="score"></span>
+          </div>
         </th>
         <th>
-          <select class="name">
-            <option>이름</option>
-            <option>경희</option>
-            <option>안나</option>
-            <option>카라</option>
-            <option>키르케</option>
-          </select>
-          <span class="score"></span>
+          <div class="header-cell">
+            <select class="name">
+              <option>이름</option>
+              <option>경희</option>
+              <option>안나</option>
+              <option>카라</option>
+              <option>키르케</option>
+            </select>
+            <span class="score"></span>
+          </div>
         </th>
       </tr>
     </thead>
