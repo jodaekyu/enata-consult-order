@@ -122,12 +122,7 @@
         }
       }
 
-      // Prevent duplicate slot assignment
-      for (let r = 0; r < tableBody.rows.length; r++) {
-        const existing = tableBody.rows[r].cells[col + 1];
-        if (existing.className !== "" && r < row) return;
-      }
-
+      // Prevent duplicate slot assignment (각 선생님이 같은 줄에 두 번 입력 못 하도록만 제한)
       const states = ["", "general", "designated", "reserved"];
       const current = cell.className;
       const next = states[(states.indexOf(current) + 1) % states.length];
