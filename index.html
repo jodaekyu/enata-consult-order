@@ -38,9 +38,9 @@
     th {
       background-color: #eaeaea;
     }
-    .active {
-      background-color: #999 !important;
-      color: white;
+    td.name {
+      background-color: #fff8dc;
+      cursor: text;
     }
     .general {
       background-color: #4CAF50;
@@ -72,10 +72,10 @@
     <thead>
       <tr id="nameRow">
         <th>순서</th>
-        <th class="name">경희</th>
-        <th class="name">안나</th>
-        <th class="name">카라</th>
-        <th class="name">키르케</th>
+        <th contenteditable="true" class="name">이름</th>
+        <th contenteditable="true" class="name">이름</th>
+        <th contenteditable="true" class="name">이름</th>
+        <th contenteditable="true" class="name">이름</th>
       </tr>
     </thead>
     <tbody id="tableBody"></tbody>
@@ -83,24 +83,13 @@
 
   <script>
     const tableBody = document.getElementById("tableBody");
-    const nameRow = document.getElementById("nameRow");
     const maxRows = 50;
+    const nameRow = document.getElementById("nameRow");
     const scoreMap = { general: 1, designated: 1, reserved: 0.5 };
-    const activeTeachers = [false, false, false, false];
-    let currentBlinkCell = null;
-
-    nameRow.querySelectorAll(".name").forEach((cell, idx) => {
-      cell.style.cursor = "pointer";
-      cell.addEventListener("click", () => {
-        activeTeachers[idx] = !activeTeachers[idx];
-        cell.classList.toggle("active", activeTeachers[idx]);
-        updateScores();
-      });
-    });
 
     function createTable(rows = 10) {
-      const existingRows = tableBody.rows.length;
-      for (let i = existingRows; i < rows; i++) {
+      tableBody.innerHTML = "";
+      for (let i = 0; i < rows; i++) {
         const tr = document.createElement("tr");
         const th = document.createElement("th");
         th.textContent = i + 1;
@@ -109,15 +98,7 @@
           const td = document.createElement("td");
           td.dataset.row = i;
           td.dataset.col = j;
-          td.addEventListener("click", () => {
-            if (td === currentBlinkCell || td.className) {
-              if (td.classList.contains("blink")) {
-                td.classList.remove("blink");
-                currentBlinkCell = null;
-              }
-              toggleType(td);
-            }
-          });
+          td.addEventListener("click", () => toggleType(td));
           tr.appendChild(td);
         }
         tableBody.appendChild(tr);
@@ -125,29 +106,17 @@
     }
 
     function toggleType(cell) {
-  const row = parseInt(cell.dataset.row);
-  const col = parseInt(cell.dataset.col);
-  // 이전 순서에 이미 누가 입력했는지 검사
-  for (let i = 0; i < row; i++) {
-    const otherCell = tableBody.rows[i].cells[col + 1];
-    if (otherCell.className !== "") return; // 이전 순서가 비어있지 않으면 현재 셀도 막음
-  }
-  // 같은 줄에 다른 사람이 입력했는지 검사
-  for (let i = 0; i < 4; i++) {
-    if (i !== col) {
-      const other = tableBody.rows[row].cells[i + 1];
-      if (other.className !== "") return;
-    }
-  }
-  const states = ["", "general", "designated", "reserved"];
-  const current = cell.className;
-  const next = states[(states.indexOf(current) + 1) % states.length];
-  cell.className = next;
-  cell.textContent = next === "" ? "" : (next === "general" ? "일반" : next === "designated" ? "지명" : "예약");
-  updateScores();
-  expandTable();
-}
+      const row = parseInt(cell.dataset.row);
+      const col = parseInt(cell.dataset.col);
+
+      // 같은 줄에 다른 셀이 이미 입력되어 있으면 클릭 불가
+      for (let i = 0; i < 4; i++) {
+        if (i !== col) {
+          const other = tableBody.rows[row].cells[i + 1];
+          if (other.className !== "") return;
+        }
       }
+
       const states = ["", "general", "designated", "reserved"];
       const current = cell.className;
       const next = states[(states.indexOf(current) + 1) % states.length];
@@ -162,29 +131,29 @@
       for (let row of tableBody.rows) {
         for (let i = 0; i < 4; i++) {
           const cls = row.cells[i + 1].className;
-          if (scoreMap[cls] && activeTeachers[i]) scores[i] += scoreMap[cls];
+          if (scoreMap[cls]) scores[i] += scoreMap[cls];
         }
       }
       for (let i = 1; i <= 4; i++) {
-        const name = nameRow.cells[i].textContent.split("(")[0].trim();
-        nameRow.cells[i].textContent = `${name} (${scores[i - 1]})점`;
+        const name = nameRow.cells[i].innerText.split("(")[0].trim() || "이름";
+        nameRow.cells[i].innerText = `${name} (${scores[i - 1]}점)`;
       }
       updateNextBlink(scores);
     }
 
     function updateNextBlink(scores) {
-  if (currentBlinkCell) currentBlinkCell.classList.remove("blink");
-  currentBlinkCell = null;
-  // 깜빡임 기능 제거됨
-})).filter(t => activeTeachers[t.idx]);
+      for (let row of tableBody.rows) {
+        for (let i = 1; i <= 4; i++) {
+          row.cells[i].classList.remove("blink");
+        }
+      }
+      const queue = scores.map((score, idx) => ({ idx, score }));
       queue.sort((a, b) => a.score - b.score);
-
       for (let row of tableBody.rows) {
         for (let q of queue) {
           const targetCell = row.cells[q.idx + 1];
           if (targetCell.className === "") {
             targetCell.classList.add("blink");
-            currentBlinkCell = targetCell;
             return;
           }
         }
