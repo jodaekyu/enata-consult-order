@@ -38,25 +38,22 @@
       cursor: text;
     }
     .general {
-      background-color: #d4edda;
+      background-color: #4CAF50;
+      color: white;
     }
     .designated {
-      background-color: #f8d7da;
+      background-color: #F44336;
+      color: white;
     }
     .reserved {
-      background-color: #d1ecf1;
+      background-color: #2196F3;
+      color: white;
     }
-    .hidden {
-      display: none;
+    .blink {
+      animation: blink 1s step-start infinite;
     }
-    .score-label {
-      font-size: 14px;
-      color: gray;
-      margin-left: 5px;
-    }
-    #nextDisplay {
-      margin-top: 10px;
-      font-weight: bold;
+    @keyframes blink {
+      50% { background-color: #ffff99; }
     }
   </style>
 </head>
@@ -76,20 +73,18 @@
         <th contenteditable="true" class="name">이름</th>
       </tr>
     </thead>
-    <tbody id="tableBody">
-    </tbody>
+    <tbody id="tableBody"></tbody>
   </table>
-  <div id="nextDisplay">다음 순서: -</div>
+
   <script>
     const tableBody = document.getElementById("tableBody");
-    const nextDisplay = document.getElementById("nextDisplay");
     const maxRows = 50;
-    const names = ["", "", "", ""];
-    const cellData = Array.from({ length: maxRows }, () => Array(4).fill(""));
+    const nameRow = document.getElementById("nameRow");
+    const scoreMap = { general: 1, designated: 1, reserved: 0.5 };
 
-    function updateTable(limit) {
+    function createTable(rows = 10) {
       tableBody.innerHTML = "";
-      for (let i = 0; i < limit; i++) {
+      for (let i = 0; i < rows; i++) {
         const tr = document.createElement("tr");
         const th = document.createElement("th");
         th.textContent = i + 1;
@@ -98,74 +93,71 @@
           const td = document.createElement("td");
           td.dataset.row = i;
           td.dataset.col = j;
-          td.addEventListener("click", handleClick);
+          td.addEventListener("click", () => toggleType(td));
           tr.appendChild(td);
         }
         tableBody.appendChild(tr);
       }
     }
 
-    function handleClick(e) {
-      const td = e.currentTarget;
+    function toggleType(cell) {
       const states = ["", "general", "designated", "reserved"];
-      let state = td.dataset.state || "";
-      let nextIndex = (states.indexOf(state) + 1) % states.length;
-      td.className = states[nextIndex];
-      td.dataset.state = states[nextIndex];
+      const current = cell.className;
+      const next = states[(states.indexOf(current) + 1) % states.length];
+      cell.className = next;
+      cell.textContent = next === "" ? "" : (next === "general" ? "일반" : next === "designated" ? "지명" : "예약");
       updateScores();
-      expandTableIfNeeded();
+      expandTable();
     }
 
     function updateScores() {
-      const scoreRow = document.getElementById("nameRow").children;
       const scores = [0, 0, 0, 0];
-      tableBody.querySelectorAll("tr").forEach(row => {
-        Array.from(row.children).slice(1).forEach((cell, idx) => {
-          if (cell.classList.contains("general") || cell.classList.contains("designated")) scores[idx] += 1;
-          if (cell.classList.contains("reserved")) scores[idx] += 0.5;
-        });
-      });
-      for (let i = 1; i <= 4; i++) {
-        let nameCell = scoreRow[i];
-        const name = nameCell.textContent.trim() || "이름";
-        nameCell.innerHTML = `${name} <span class="score-label">(${scores[i - 1]}점)</span>`;
-      }
-      updateNext(scores);
-    }
-
-    function updateNext(scores) {
-      const queue = scores.map((score, idx) => ({ idx, score }));
-      queue.sort((a, b) => a.score - b.score);
-      for (let row of tableBody.children) {
-        for (let i = 1; i <= 4; i++) {
-          if (row.children[i].className === "") {
-            nextDisplay.textContent = `다음 순서: ${document.getElementById("nameRow").children[queue[0].idx + 1].textContent.trim()}`;
-            return;
-          }
+      for (let row of tableBody.rows) {
+        for (let i = 0; i < 4; i++) {
+          const cls = row.cells[i + 1].className;
+          if (scoreMap[cls]) scores[i] += scoreMap[cls];
         }
       }
-      nextDisplay.textContent = "다음 순서: -";
+      for (let i = 1; i <= 4; i++) {
+        const name = nameRow.cells[i].innerText.split("(")[0].trim() || "이름";
+        nameRow.cells[i].innerText = `${name} (${scores[i - 1]}점)`;
+      }
+      updateNextBlink(scores);
     }
 
-    function expandTableIfNeeded() {
+    function updateNextBlink(scores) {
+      // 모든 깜빡임 제거
+      for (let row of tableBody.rows) {
+        row.cells[0].classList.remove("blink");
+      }
+      const nextIndex = scores.indexOf(Math.min(...scores));
+      for (let row of tableBody.rows) {
+        const cell = row.cells[nextIndex + 1];
+        if (cell.className === "") {
+          row.cells[0].classList.add("blink");
+          break;
+        }
+      }
+    }
+
+    function expandTable() {
       let filled = 0;
-      tableBody.querySelectorAll("td").forEach(td => {
-        if (td.className !== "") filled++;
-      });
+      for (let row of tableBody.rows) {
+        for (let i = 1; i <= 4; i++) {
+          if (row.cells[i].className !== "") filled++;
+        }
+      }
       const filledRows = Math.floor(filled / 4);
-      let newLimit = 10;
-      if (filledRows >= 8) newLimit = 20;
-      if (filledRows >= 18) newLimit = 30;
-      if (filledRows >= 28) newLimit = 40;
-      if (filledRows >= 38) newLimit = 50;
-      updateTable(newLimit);
+      let limit = 10;
+      if (filledRows >= 8) limit = 20;
+      if (filledRows >= 18) limit = 30;
+      if (filledRows >= 28) limit = 40;
+      if (filledRows >= 38) limit = 50;
+      if (tableBody.rows.length < limit) createTable(limit);
     }
 
-    // 날짜 기본값 오늘로 설정
     document.getElementById("datePicker").valueAsDate = new Date();
-
-    // 초기 테이블 렌더링
-    updateTable(10);
+    createTable(10);
   </script>
 </body>
 </html>
