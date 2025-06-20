@@ -17,7 +17,7 @@
       text-align: center;
       margin-bottom: 20px;
     }
-    input[type="date"] {
+    input[type="date"], select {
       padding: 5px 10px;
       font-size: 16px;
     }
@@ -42,6 +42,10 @@
       background-color: #999 !important;
       color: white;
     }
+    .selected {
+      background-color: #ffd700;
+      color: black;
+    }
     .general {
       background-color: #4CAF50;
       color: white;
@@ -61,6 +65,14 @@
   <div class="date-area">
     <label for="datePicker">날짜 선택: </label>
     <input type="date" id="datePicker">
+    <label for="teacherSelect">선생님 선택: </label>
+    <select id="teacherSelect">
+      <option>이름</option>
+      <option>경희</option>
+      <option>안나</option>
+      <option>카라</option>
+      <option>키르케</option>
+    </select>
   </div>
   <table id="orderTable">
     <thead>
@@ -81,13 +93,15 @@
     const scoreMap = { general: 1, designated: 1, reserved: 0.5 };
     const activeTeachers = [false, false, false, false];
 
-    nameRow.querySelectorAll(".name").forEach((cell, idx) => {
-      cell.style.cursor = "pointer";
-      cell.addEventListener("click", () => {
-        activeTeachers[idx] = !activeTeachers[idx];
-        cell.classList.toggle("active", activeTeachers[idx]);
-        updateScores();
+    // 드롭다운 선택 시 적용
+    document.getElementById("teacherSelect").addEventListener("change", function () {
+      const selected = this.value;
+      nameRow.querySelectorAll(".name").forEach((cell, idx) => {
+        const isMatch = cell.textContent === selected;
+        activeTeachers[idx] = isMatch;
+        cell.classList.toggle("selected", isMatch);
       });
+      updateScores();
     });
 
     function createTable(rows = 40) {
@@ -114,7 +128,6 @@
 
       if (!activeTeachers[col]) return;
 
-      // Prevent other teachers from writing in the same row
       for (let i = 0; i < 4; i++) {
         if (i !== col) {
           const other = tableBody.rows[row].cells[i + 1];
@@ -122,14 +135,12 @@
         }
       }
 
-      // Prevent duplicate slot assignment (각 선생님이 같은 줄에 두 번 입력 못 하도록만 제한)
       const states = ["", "general", "designated", "reserved"];
       const current = cell.className;
       const next = states[(states.indexOf(current) + 1) % states.length];
       cell.className = next;
       cell.textContent = next === "" ? "" : (next === "general" ? "일반" : next === "designated" ? "지명" : "예약");
       updateScores();
-      expandTable();
     }
 
     function updateScores() {
@@ -144,22 +155,6 @@
         const name = nameRow.cells[i].textContent.split("(")[0].trim();
         nameRow.cells[i].textContent = `${name} (${scores[i - 1]}점)`;
       }
-    }
-
-    function expandTable() {
-      let filled = 0;
-      for (let row of tableBody.rows) {
-        for (let i = 1; i <= 4; i++) {
-          if (row.cells[i].className !== "") filled++;
-        }
-      }
-      const filledRows = Math.floor(filled / 4);
-      let limit = 10;
-      if (filledRows >= 8) limit = 20;
-      if (filledRows >= 18) limit = 30;
-      if (filledRows >= 28) limit = 40;
-      if (filledRows >= 38) limit = 50;
-      if (tableBody.rows.length < limit) createTable(limit);
     }
 
     document.getElementById("datePicker").valueAsDate = new Date();
