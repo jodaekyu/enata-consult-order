@@ -125,13 +125,28 @@
     }
 
     function toggleType(cell) {
-      const row = parseInt(cell.dataset.row);
-      const col = parseInt(cell.dataset.col);
-      for (let i = 0; i < 4; i++) {
-        if (i !== col) {
-          const other = tableBody.rows[row].cells[i + 1];
-          if (other.className !== "") return;
-        }
+  const row = parseInt(cell.dataset.row);
+  const col = parseInt(cell.dataset.col);
+  // 이전 순서에 이미 누가 입력했는지 검사
+  for (let i = 0; i < row; i++) {
+    const otherCell = tableBody.rows[i].cells[col + 1];
+    if (otherCell.className !== "") return; // 이전 순서가 비어있지 않으면 현재 셀도 막음
+  }
+  // 같은 줄에 다른 사람이 입력했는지 검사
+  for (let i = 0; i < 4; i++) {
+    if (i !== col) {
+      const other = tableBody.rows[row].cells[i + 1];
+      if (other.className !== "") return;
+    }
+  }
+  const states = ["", "general", "designated", "reserved"];
+  const current = cell.className;
+  const next = states[(states.indexOf(current) + 1) % states.length];
+  cell.className = next;
+  cell.textContent = next === "" ? "" : (next === "general" ? "일반" : next === "designated" ? "지명" : "예약");
+  updateScores();
+  expandTable();
+}
       }
       const states = ["", "general", "designated", "reserved"];
       const current = cell.className;
@@ -158,10 +173,10 @@
     }
 
     function updateNextBlink(scores) {
-      if (currentBlinkCell) currentBlinkCell.classList.remove("blink");
-      currentBlinkCell = null;
-
-      const queue = scores.map((score, idx) => ({ idx, score })).filter(t => activeTeachers[t.idx]);
+  if (currentBlinkCell) currentBlinkCell.classList.remove("blink");
+  currentBlinkCell = null;
+  // 깜빡임 기능 제거됨
+})).filter(t => activeTeachers[t.idx]);
       queue.sort((a, b) => a.score - b.score);
 
       for (let row of tableBody.rows) {
