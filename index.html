@@ -1,110 +1,171 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>상담 순서표</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>에나타 상담 순서표</title>
   <style>
     body {
       font-family: sans-serif;
       padding: 20px;
+      background: #f5f5f5;
     }
-    h2 {
-      margin-bottom: 10px;
+    h1 {
+      text-align: center;
     }
-    .date-box {
+    .date-area {
+      text-align: center;
       margin-bottom: 20px;
     }
+    input[type="date"] {
+      padding: 5px 10px;
+      font-size: 16px;
+    }
     table {
-      border-collapse: collapse;
       width: 100%;
+      border-collapse: collapse;
     }
     th, td {
       border: 1px solid #ccc;
-      width: 80px;
-      height: 40px;
       text-align: center;
-      vertical-align: middle;
+      padding: 8px;
     }
-    .cell {
-      cursor: pointer;
+    th {
+      background-color: #eaeaea;
     }
-    .일반 {
-      background-color: #4CAF50;
-      color: white;
+    td.name {
+      background-color: #fff8dc;
+      cursor: text;
     }
-    .지명 {
-      background-color: #F44336;
-      color: white;
+    .general {
+      background-color: #d4edda;
     }
-    .예약 {
-      background-color: #2196F3;
-      color: white;
+    .designated {
+      background-color: #f8d7da;
+    }
+    .reserved {
+      background-color: #d1ecf1;
+    }
+    .hidden {
+      display: none;
+    }
+    .score-label {
+      font-size: 14px;
+      color: gray;
+      margin-left: 5px;
+    }
+    #nextDisplay {
+      margin-top: 10px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h2>상담 순서표 (실시간 공유)</h2>
-  <div class="date-box">
-    <input type="date" id="selectedDate" value="" onchange="updateDate()" />
+  <h1>에나타 상담 순서표</h1>
+  <div class="date-area">
+    <label for="datePicker">날짜 선택: </label>
+    <input type="date" id="datePicker">
   </div>
-
-  <table id="scheduleTable">
+  <table id="orderTable">
     <thead>
-      <tr>
-        <th>시간</th>
-        <th>안나</th>
-        <th>경희</th>
-        <th>키르케</th>
-        <th>카라</th>
+      <tr id="nameRow">
+        <th>순서</th>
+        <th contenteditable="true" class="name">이름</th>
+        <th contenteditable="true" class="name">이름</th>
+        <th contenteditable="true" class="name">이름</th>
+        <th contenteditable="true" class="name">이름</th>
       </tr>
     </thead>
-    <tbody id="scheduleBody"></tbody>
+    <tbody id="tableBody">
+    </tbody>
   </table>
-
+  <div id="nextDisplay">다음 순서: -</div>
   <script>
-    const 상담사들 = ["안나", "경희", "키르케", "카라"];
-    const 총칸수 = 17;
+    const tableBody = document.getElementById("tableBody");
+    const nextDisplay = document.getElementById("nextDisplay");
+    const maxRows = 50;
+    const names = ["", "", "", ""];
+    const cellData = Array.from({ length: maxRows }, () => Array(4).fill(""));
 
-    function createTable() {
-      const tbody = document.getElementById("scheduleBody");
-      tbody.innerHTML = "";
-
-      for (let i = 1; i <= 총칸수; i++) {
-        const row = document.createElement("tr");
-        const timeCell = document.createElement("td");
-        timeCell.textContent = i;
-        row.appendChild(timeCell);
-
-        상담사들.forEach(() => {
-          const cell = document.createElement("td");
-          cell.classList.add("cell");
-          cell.addEventListener("click", () => toggleType(cell));
-          row.appendChild(cell);
-        });
-        tbody.appendChild(row);
+    function updateTable(limit) {
+      tableBody.innerHTML = "";
+      for (let i = 0; i < limit; i++) {
+        const tr = document.createElement("tr");
+        const th = document.createElement("th");
+        th.textContent = i + 1;
+        tr.appendChild(th);
+        for (let j = 0; j < 4; j++) {
+          const td = document.createElement("td");
+          td.dataset.row = i;
+          td.dataset.col = j;
+          td.addEventListener("click", handleClick);
+          tr.appendChild(td);
+        }
+        tableBody.appendChild(tr);
       }
     }
 
-    function toggleType(cell) {
-      const types = ["", "일반", "지명", "예약"];
-      const current = cell.innerText.trim();
-      const nextIndex = (types.indexOf(current) + 1) % types.length;
-      const next = types[nextIndex];
-      cell.innerText = next;
-      cell.classList.remove("일반", "지명", "예약");
-      if (next) cell.classList.add(next);
+    function handleClick(e) {
+      const td = e.currentTarget;
+      const states = ["", "general", "designated", "reserved"];
+      let state = td.dataset.state || "";
+      let nextIndex = (states.indexOf(state) + 1) % states.length;
+      td.className = states[nextIndex];
+      td.dataset.state = states[nextIndex];
+      updateScores();
+      expandTableIfNeeded();
     }
 
-    function updateDate() {
-      const selected = document.getElementById("selectedDate");
-      console.log("선택한 날짜:", selected.value);
-      // 이후 Firebase 연동 또는 날짜별 데이터 저장 연동 예정
+    function updateScores() {
+      const scoreRow = document.getElementById("nameRow").children;
+      const scores = [0, 0, 0, 0];
+      tableBody.querySelectorAll("tr").forEach(row => {
+        Array.from(row.children).slice(1).forEach((cell, idx) => {
+          if (cell.classList.contains("general") || cell.classList.contains("designated")) scores[idx] += 1;
+          if (cell.classList.contains("reserved")) scores[idx] += 0.5;
+        });
+      });
+      for (let i = 1; i <= 4; i++) {
+        let nameCell = scoreRow[i];
+        const name = nameCell.textContent.trim() || "이름";
+        nameCell.innerHTML = `${name} <span class="score-label">(${scores[i - 1]}점)</span>`;
+      }
+      updateNext(scores);
     }
 
-    // 기본 날짜 오늘로 설정
-    document.getElementById("selectedDate").value = new Date().toISOString().split('T')[0];
-    createTable();
+    function updateNext(scores) {
+      const queue = scores.map((score, idx) => ({ idx, score }));
+      queue.sort((a, b) => a.score - b.score);
+      for (let row of tableBody.children) {
+        for (let i = 1; i <= 4; i++) {
+          if (row.children[i].className === "") {
+            nextDisplay.textContent = `다음 순서: ${document.getElementById("nameRow").children[queue[0].idx + 1].textContent.trim()}`;
+            return;
+          }
+        }
+      }
+      nextDisplay.textContent = "다음 순서: -";
+    }
+
+    function expandTableIfNeeded() {
+      let filled = 0;
+      tableBody.querySelectorAll("td").forEach(td => {
+        if (td.className !== "") filled++;
+      });
+      const filledRows = Math.floor(filled / 4);
+      let newLimit = 10;
+      if (filledRows >= 8) newLimit = 20;
+      if (filledRows >= 18) newLimit = 30;
+      if (filledRows >= 28) newLimit = 40;
+      if (filledRows >= 38) newLimit = 50;
+      updateTable(newLimit);
+    }
+
+    // 날짜 기본값 오늘로 설정
+    document.getElementById("datePicker").valueAsDate = new Date();
+
+    // 초기 테이블 렌더링
+    updateTable(10);
   </script>
 </body>
 </html>
