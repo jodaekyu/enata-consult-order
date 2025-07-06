@@ -80,7 +80,10 @@ onAuthStateChanged(auth, (user) => {
     if (email === "kara@email.com") currentUserName = "카라";
     if (email === "kirke@email.com") currentUserName = "키르케";
 
-    document.getElementById("loginStatus").innerText = `${currentUserName}님 로그인됨`;
+ document.getElementById("loginStatus").innerText = "로그인 성공!";
+    document.getElementById("loginBox").style.display = "none";      // 로그인칸 숨김
+    document.getElementById("signupBox").style.display = "none";     // 회원가입칸 숨김
+    document.getElementById("userEmailDisplay").innerText = `${email} 로그인중`;  // 오른쪽 상단 표시
   }
 });
 
