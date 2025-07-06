@@ -1,4 +1,5 @@
 // Firebase SDK 모듈 임포트
+import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth,
@@ -51,17 +52,6 @@ let currentUserName = "";
 
 document.getElementById("datePicker").valueAsDate = new Date();
 let currentDate = datePicker.value;
-
-// 로그인 함수
-window.login = function () {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  signInWithEmailAndPassword(auth, email, password)
-    .catch((error) => {
-      alert("로그인 실패: " + error.message);
-    });
-};
 
 // 🔐 회원가입 함수
 window.signup = function () {
