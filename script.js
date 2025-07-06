@@ -1,8 +1,19 @@
 // Firebase SDK 모듈 임포트
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// 🔐 여기에 본인의 Firebase 설정값 입력
+// Firebase 설정값
 const firebaseConfig = {
   apiKey: "AIzaSyBCQVBVr9WXt4eK-mr7OZCcs72Y8iKZJBY",
   authDomain: "enata-consult-order.firebaseapp.com",
@@ -13,9 +24,18 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const auth = getAuth(app);
 
+const tableBody = document.getElementById("tableBody");
+const nameRow = document.getElementById("nameRow");
+const datePicker = document.getElementById("datePicker");
+const scoreMap = { general: 1, designated: 1, reserved: 0.5 };
+const activeTeachers = [false, false, false, false];
 let currentUserName = "";
+
+document.getElementById("datePicker").valueAsDate = new Date();
+let currentDate = datePicker.value;
 
 // 로그인 함수
 window.login = function () {
@@ -23,7 +43,7 @@ window.login = function () {
   const password = document.getElementById("password").value;
 
   signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
+    .then(() => {
       document.getElementById("loginStatus").innerText = "로그인 성공!";
     })
     .catch((error) => {
@@ -31,14 +51,191 @@ window.login = function () {
     });
 };
 
-// 로그인 상태 체크
+// 로그인 상태 감지
 onAuthStateChanged(auth, (user) => {
   if (user) {
     const email = user.email;
     if (email === "kyunghee@email.com") currentUserName = "경희";
     if (email === "anna@email.com") currentUserName = "안나";
     if (email === "kara@email.com") currentUserName = "카라";
+    if (email === "kirke@email.com") currentUserName = "키르케";
 
     document.getElementById("loginStatus").innerText = `${currentUserName}님 로그인됨`;
   }
 });
+
+nameRow.querySelectorAll("select.name").forEach((select, idx) => {
+  select.addEventListener("change", function () {
+    const value = this.value;
+    activeTeachers[idx] = (value !== "이름");
+    this.classList.toggle("selected", value !== "이름");
+    updateScores();
+    updateNextSuggestions();
+  });
+});
+
+datePicker.addEventListener("change", (e) => {
+  currentDate = e.target.value;
+  loadSchedule(currentDate);
+});
+
+function createTable(rows = 60) {
+  tableBody.innerHTML = "";
+  for (let i = 0; i < rows; i++) {
+    const tr = document.createElement("tr");
+    const th = document.createElement("th");
+    th.textContent = i + 1;
+    tr.appendChild(th);
+    for (let j = 0; j < 4; j++) {
+      const td = document.createElement("td");
+      td.dataset.row = i;
+      td.dataset.col = j;
+      td.addEventListener("click", () => toggleType(td));
+      tr.appendChild(td);
+    }
+    tableBody.appendChild(tr);
+  }
+}
+
+function toggleType(cell) {
+  const row = parseInt(cell.dataset.row);
+  const col = parseInt(cell.dataset.col);
+
+  // 🔒 본인 이름만 선택 가능하도록 제한
+  const selectedName = nameRow.querySelectorAll("select.name")[col].value;
+  if (!activeTeachers[col] || currentUserName !== selectedName) {
+    alert("본인 이름의 칸만 선택할 수 있어요.");
+    return;
+  }
+
+  for (let i = 0; i < 4; i++) {
+    if (i !== col) {
+      const other = tableBody.rows[row].cells[i + 1];
+      if (other.className !== "") return;
+    }
+  }
+
+  const states = ["", "general", "designated", "reserved"];
+  const current = cell.className;
+  const next = states[(states.indexOf(current) + 1) % states.length];
+  cell.className = next;
+  cell.textContent = next === "" ? "" :
+                     next === "general" ? "일반" :
+                     next === "designated" ? "지명" :
+                     "예약";
+  updateScores();
+  updateNextSuggestions();
+  saveSchedule();
+}
+
+function updateScores() {
+  const scores = [0, 0, 0, 0];
+  for (let row of tableBody.rows) {
+    for (let i = 0; i < 4; i++) {
+      const cls = row.cells[i + 1].className;
+      if (scoreMap[cls] && activeTeachers[i]) scores[i] += scoreMap[cls];
+    }
+  }
+  nameRow.querySelectorAll("th").forEach((th, i) => {
+    const scoreSpan = th.querySelector(".score");
+    if (scoreSpan && activeTeachers[i - 1]) {
+      scoreSpan.textContent = `(${scores[i - 1]}점)`;
+    } else if (scoreSpan) {
+      scoreSpan.textContent = "";
+    }
+  });
+}
+
+function updateNextSuggestions() {
+  const scores = [0, 0, 0, 0];
+  for (let row of tableBody.rows) {
+    for (let i = 0; i < 4; i++) {
+      const cls = row.cells[i + 1].className;
+      if (scoreMap[cls] && activeTeachers[i]) scores[i] += scoreMap[cls];
+    }
+  }
+
+  for (let i = 0; i < tableBody.rows.length; i++) {
+    const row = tableBody.rows[i];
+    const th = row.cells[0];
+    let isFilled = false;
+    for (let j = 1; j <= 4; j++) {
+      if (row.cells[j].className !== "") {
+        isFilled = true;
+        break;
+      }
+    }
+    if (!isFilled) {
+      const active = scores.map((score, idx) => ({ idx, score }))
+                           .filter(t => activeTeachers[t.idx])
+                           .sort((a, b) => a.score - b.score);
+      if (active.length > 0) {
+        th.textContent = nameRow.querySelectorAll("select.name")[active[0].idx].value;
+      }
+      break;
+    } else {
+      th.textContent = i + 1;
+    }
+  }
+}
+
+async function saveSchedule() {
+  const ref = doc(db, "schedules", currentDate);
+  const slots = [];
+
+  Array.from(tableBody.rows).forEach((row, rowIndex) => {
+    Array.from(row.cells).slice(1).forEach((td, colIndex) => {
+      slots.push({
+        row: rowIndex + 1,
+        col: colIndex,
+        type: td.className || ""
+      });
+    });
+  });
+
+  const teacherNames = Array.from(nameRow.querySelectorAll("select.name"))
+                            .map(select => select.value);
+
+  await setDoc(ref, { slots, teacherNames });
+}
+
+async function loadSchedule(dateStr) {
+  const ref = doc(db, "schedules", dateStr);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) {
+    await setDoc(ref, { slots: [] });
+  }
+  onSnapshot(ref, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      restoreTable(data.slots, data.teacherNames);
+    }
+  });
+}
+
+function restoreTable(slots, teacherNames = []) {
+  createTable(60);
+
+  nameRow.querySelectorAll("select.name").forEach((select, i) => {
+    const value = teacherNames[i] || "이름";
+    select.value = value;
+    activeTeachers[i] = (value !== "이름");
+    select.classList.toggle("selected", value !== "이름");
+  });
+
+  slots.forEach(item => {
+    const cell = tableBody.rows[item.row - 1]?.cells?.[item.col + 1];
+    if (!cell) return;
+    const type = item.type;
+    cell.className = type;
+    cell.textContent = type === "general" ? "일반" :
+                       type === "designated" ? "지명" :
+                       type === "reserved" ? "예약" : "";
+  });
+
+  updateScores();
+  updateNextSuggestions();
+}
+
+createTable(60);
+loadSchedule(currentDate);
