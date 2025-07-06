@@ -318,6 +318,17 @@ async function saveSchedule() {
 
     createTable(60);
     loadSchedule(currentDate);
+
+// ✅ 2번. 로그아웃 함수는 여기에 추가
+window.logout = function () {
+  signOut(auth)
+    .then(() => {
+      location.reload();  // 새로고침으로 전체 초기화
+    })
+    .catch((error) => {
+      alert("로그아웃 실패: " + error.message);
+    });
+};
   </script>
 <script type="module" src="script.js"></script>
 
