@@ -170,17 +170,32 @@ function createTable(rows = 60) {
 function toggleType(cell) {
   const row = parseInt(cell.dataset.row);
   const col = parseInt(cell.dataset.col);
-
   const selectedName = nameRow.querySelectorAll("select.name")[col].value;
 
-  // ✅ 대표(owner)는 제한 없이 전체 열 편집 가능
-  if (role !== "owner") {
-    if (!activeTeachers[col] || currentUserName !== selectedName) {
-      alert("본인 이름의 칸만 선택할 수 있어요.");
-      return;
+  // ✅ 대표(owner)는 전체 열 편집 가능, admin은 자기 열만
+  if (role !== "owner" && (!activeTeachers[col] || currentUserName !== selectedName)) {
+    alert("본인 이름의 칸만 선택할 수 있어요.");
+    return;
+  }
+
+  // ✅ 현재 행에 이미 다른 사람 예약이 있다면 입력 금지 → 다음 빈 줄로 자동 이동
+  for (let i = 0; i < 4; i++) {
+    if (i !== col) {
+      const other = tableBody.rows[row].cells[i + 1];
+      if (other.className !== "") {
+        const nextRow = findNextEmptyRow(col);
+        if (nextRow === -1) {
+          alert("입력 가능한 빈 순서가 없습니다.");
+          return;
+        }
+        // 다음 빈 줄로 이동해서 다시 입력 시도
+        toggleType(tableBody.rows[nextRow].cells[col + 1]);
+        return;
+      }
     }
   }
 
+  // ✅ 셀 상태 변경
   const states = ["", "general", "designated", "reserved"];
   const current = cell.className;
   const next = states[(states.indexOf(current) + 1) % states.length];
@@ -194,6 +209,21 @@ function toggleType(cell) {
   updateScores();
   updateNextSuggestions();
   saveSchedule();
+}
+
+function findNextEmptyRow(col) {
+  for (let i = 0; i < tableBody.rows.length; i++) {
+    let isRowEmpty = true;
+    for (let j = 1; j <= 4; j++) {
+      const cell = tableBody.rows[i].cells[j];
+      if (cell.className !== "") {
+        isRowEmpty = false;
+        break;
+      }
+    }
+    if (isRowEmpty) return i;
+  }
+  return -1; // 없으면 -1 반환
 }
 
 
