@@ -3,6 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import {
   getAuth,
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
@@ -48,6 +49,25 @@ window.login = function () {
     })
     .catch((error) => {
       alert("로그인 실패: " + error.message);
+    });
+};
+
+// 🔐 회원가입 함수
+window.signup = function () {
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
+
+  if (!email || !password) {
+    alert("이메일과 비밀번호를 입력해주세요.");
+    return;
+  }
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      document.getElementById("signupStatus").innerText = "회원가입 성공! 로그인해주세요.";
+    })
+    .catch((error) => {
+      alert("회원가입 실패: " + error.message);
     });
 };
 
@@ -101,7 +121,6 @@ function toggleType(cell) {
   const row = parseInt(cell.dataset.row);
   const col = parseInt(cell.dataset.col);
 
-  // 🔒 본인 이름만 선택 가능하도록 제한
   const selectedName = nameRow.querySelectorAll("select.name")[col].value;
   if (!activeTeachers[col] || currentUserName !== selectedName) {
     alert("본인 이름의 칸만 선택할 수 있어요.");
@@ -218,24 +237,4 @@ function restoreTable(slots, teacherNames = []) {
 
   nameRow.querySelectorAll("select.name").forEach((select, i) => {
     const value = teacherNames[i] || "이름";
-    select.value = value;
-    activeTeachers[i] = (value !== "이름");
-    select.classList.toggle("selected", value !== "이름");
-  });
-
-  slots.forEach(item => {
-    const cell = tableBody.rows[item.row - 1]?.cells?.[item.col + 1];
-    if (!cell) return;
-    const type = item.type;
-    cell.className = type;
-    cell.textContent = type === "general" ? "일반" :
-                       type === "designated" ? "지명" :
-                       type === "reserved" ? "예약" : "";
-  });
-
-  updateScores();
-  updateNextSuggestions();
-}
-
-createTable(60);
-loadSchedule(currentDate);
+    select.value = va
