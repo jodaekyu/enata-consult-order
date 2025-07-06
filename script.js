@@ -178,24 +178,19 @@ function toggleType(cell) {
     return;
   }
 
-  // ✅ 현재 행에 이미 다른 사람 예약이 있다면 입력 금지 → 다음 빈 줄로 자동 이동
+  // ✅ 해당 줄에 다른 사람이 입력해둔 셀이 있으면 클릭 무시
   for (let i = 0; i < 4; i++) {
     if (i !== col) {
       const other = tableBody.rows[row].cells[i + 1];
       if (other.className !== "") {
-        const nextRow = findNextEmptyRow(col);
-        if (nextRow === -1) {
-          alert("입력 가능한 빈 순서가 없습니다.");
-          return;
-        }
-        // 다음 빈 줄로 이동해서 다시 입력 시도
-        toggleType(tableBody.rows[nextRow].cells[col + 1]);
+        // ❌ 자동 이동 없이 그냥 막기만 함
+        alert("이 순서는 이미 다른 선생님이 입력했습니다. 다음 순서를 선택해 주세요.");
         return;
       }
     }
   }
 
-  // ✅ 셀 상태 변경
+  // ✅ 정상적인 경우에만 입력 가능
   const states = ["", "general", "designated", "reserved"];
   const current = cell.className;
   const next = states[(states.indexOf(current) + 1) % states.length];
