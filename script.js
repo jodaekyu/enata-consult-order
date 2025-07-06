@@ -79,14 +79,20 @@ window.signup = function () {
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     const email = user.email;
+    const idOnly = email.split("@")[0];  // 여기! '@' 앞부분만 추출
 
-    // 로그인 후 UI 변경
+   // 화면 UI 갱신
     document.getElementById("loginBox").style.display = "none";
     document.getElementById("signupBox").style.display = "none";
     document.getElementById("loginStatus").style.display = "none";
-    document.getElementById("userEmailDisplay").innerText = `${email} 로그인중`;
 
-    // Firestore에서 별칭 불러오기
+    // 오른쪽 위에 아이디만 + '로그인 성공' 표시
+    document.getElementById("userEmailDisplay").innerText = `${idOnly} (로그인 성공)`;
+
+    // 로그아웃 버튼 보이게
+    document.getElementById("logoutBtn").style.display = "inline-block";
+
+    // 별칭 가져와서 currentUserName 설정
     const docSnap = await getDoc(doc(db, "users", user.uid));
     if (docSnap.exists()) {
       currentUserName = docSnap.data().alias || "";
