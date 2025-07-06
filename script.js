@@ -315,3 +315,20 @@ async function loadTeacherAliases() {
 createTable(60);
 loadSchedule(currentDate);
 loadTeacherAliases();
+
+// ✅ [여기부터 관리자 함수 붙이기]
+window.viewAllRevenue = function () {
+  alert("전체 매출 데이터를 불러옵니다 (예시)");
+};
+
+window.openUserDeletion = async function () {
+  const uidToDelete = prompt("삭제할 선생님 UID를 입력하세요");
+  if (uidToDelete) {
+    try {
+      await deleteDoc(doc(db, "users", uidToDelete));
+      alert("삭제 완료!");
+    } catch (e) {
+      alert("삭제 실패: " + e.message);
+    }
+  }
+};
