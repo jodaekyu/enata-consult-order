@@ -161,15 +161,13 @@ function toggleType(cell) {
   const col = parseInt(cell.dataset.col);
 
   const selectedName = nameRow.querySelectorAll("select.name")[col].value;
-  if (!activeTeachers[col] || currentUserName !== selectedName) {
-    alert("본인 이름의 칸만 선택할 수 있어요.");
-    return;
-  }
-
-  for (let i = 0; i < 4; i++) {
-    if (i !== col) {
-      const other = tableBody.rows[row].cells[i + 1];
-      if (other.className !== "") return;
+ 
+  // ✅ 대표(owner)는 전체 편집 가능
+  if (role !== "owner") {
+    // 일반 admin은 본인 열만 편집 가능
+    if (!activeTeachers[col] || currentUserName !== selectedName) {
+      alert("본인 이름의 칸만 선택할 수 있어요.");
+      return;
     }
   }
 
@@ -177,10 +175,12 @@ function toggleType(cell) {
   const current = cell.className;
   const next = states[(states.indexOf(current) + 1) % states.length];
   cell.className = next;
-  cell.textContent = next === "" ? "" :
-                     next === "general" ? "일반" :
-                     next === "designated" ? "지명" :
-                     "예약";
+  cell.textContent =
+    next === "" ? "" :
+    next === "general" ? "일반" :
+    next === "designated" ? "지명" :
+    "예약";
+
   updateScores();
   updateNextSuggestions();
   saveSchedule();
