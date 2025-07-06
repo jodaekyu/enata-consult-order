@@ -315,6 +315,13 @@ async function loadTeacherAliases() {
     aliases.forEach(alias => {
       const option = document.createElement("option");
       option.textContent = alias;
+      option.value = alias;
+
+// ✅ admin인 경우, 본인 이름 외에는 선택 불가능하게 설정
+      if (role === "admin" && alias !== currentUserName) {
+        option.disabled = true;
+      }
+
       select.appendChild(option);
     });
   });
