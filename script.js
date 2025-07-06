@@ -11,6 +11,8 @@ import {
   doc,
   getDoc,
   setDoc,
+  getDocs,
+  collection,
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -44,9 +46,6 @@ window.login = function () {
   const password = document.getElementById("password").value;
 
   signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      document.getElementById("loginStatus").innerText = "로그인 성공!";
-    })
     .catch((error) => {
       alert("로그인 실패: " + error.message);
     });
@@ -66,11 +65,7 @@ window.signup = function () {
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const uid = userCredential.user.uid;
-      // Firestore에 사용자 정보 저장
-      return setDoc(doc(db, "users", uid), {
-        email,
-        alias
-      });
+      return setDoc(doc(db, "users", uid), { email, alias });
     })
     .then(() => {
       document.getElementById("signupStatus").innerText = "회원가입 성공! 로그인해주세요.";
@@ -80,21 +75,19 @@ window.signup = function () {
     });
 };
 
-
 // 로그인 상태 감지
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   if (user) {
     const email = user.email;
-    if (email === "kyunghee@email.com") currentUserName = "경희";
-    if (email === "anna@email.com") currentUserName = "안나";
-    if (email === "kara@email.com") currentUserName = "카라";
-    if (email === "kirke@email.com") currentUserName = "키르케";
-
-    // 로그인 성공 시 UI 변경
     document.getElementById("loginBox").style.display = "none";
     document.getElementById("signupBox").style.display = "none";
     document.getElementById("loginStatus").style.display = "none";
     document.getElementById("userEmailDisplay").innerText = `${email} 로그인중`;
+
+    const docSnap = await getDoc(doc(db, "users", user.uid));
+    if (docSnap.exists()) {
+      currentUserName = docSnap.data().alias || "";
+    }
   }
 });
 
@@ -251,7 +244,7 @@ function restoreTable(slots, teacherNames = []) {
 
   nameRow.querySelectorAll("select.name").forEach((select, i) => {
     const value = teacherNames[i] || "이름";
-   select.value = value;
+    select.value = value;
     activeTeachers[i] = (value !== "이름");
     select.classList.toggle("selected", value !== "이름");
   });
@@ -271,5 +264,24 @@ function restoreTable(slots, teacherNames = []) {
   updateNextSuggestions();
 }
 
+async function loadTeacherAliases() {
+  const querySnapshot = await getDocs(collection(db, "users"));
+  const aliases = [];
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    if (data.alias) aliases.push(data.alias);
+  });
+
+  document.querySelectorAll("select.name").forEach(select => {
+    select.innerHTML = '<option>이름</option>';
+    aliases.forEach(alias => {
+      const option = document.createElement("option");
+      option.textContent = alias;
+      select.appendChild(option);
+    });
+  });
+}
+
 createTable(60);
 loadSchedule(currentDate);
+loadTeacherAliases();
