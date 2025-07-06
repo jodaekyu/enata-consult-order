@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>에나타 상담 순서표</title>
   <style>
     body {
@@ -38,26 +38,11 @@
     th {
       background-color: #eaeaea;
     }
-    .active {
-      background-color: #999 !important;
-      color: white;
-    }
-    .selected {
-      background-color: #ffd700;
-      color: black;
-    }
-    .general {
-      background-color: #4CAF50;
-      color: white;
-    }
-    .designated {
-      background-color: #F44336;
-      color: white;
-    }
-    .reserved {
-      background-color: #2196F3;
-      color: white;
-    }
+    .active { background-color: #999 !important; color: white; }
+    .selected { background-color: #ffd700; color: black; }
+    .general { background-color: #4CAF50; color: white; }
+    .designated { background-color: #F44336; color: white; }
+    .reserved { background-color: #2196F3; color: white; }
     .score {
       font-size: 14px;
       color: #333;
@@ -72,12 +57,8 @@
       min-width: 80px;
     }
     @media (max-width: 600px) {
-      .header-cell {
-        min-width: 60px;
-      }
-      .score {
-        font-size: 12px;
-      }
+      .header-cell { min-width: 60px; }
+      .score { font-size: 12px; }
     }
   </style>
 </head>
@@ -91,64 +72,47 @@
     <thead>
       <tr id="nameRow">
         <th>순서</th>
-        <th>
-          <div class="header-cell">
-            <select class="name">
-              <option>이름</option>
-              <option>경희</option>
-              <option>안나</option>
-              <option>카라</option>
-              <option>키르케</option>
-            </select>
-            <span class="score"></span>
-          </div>
-        </th>
-        <th>
-          <div class="header-cell">
-            <select class="name">
-              <option>이름</option>
-              <option>경희</option>
-              <option>안나</option>
-              <option>카라</option>
-              <option>키르케</option>
-            </select>
-            <span class="score"></span>
-          </div>
-        </th>
-        <th>
-          <div class="header-cell">
-            <select class="name">
-              <option>이름</option>
-              <option>경희</option>
-              <option>안나</option>
-              <option>카라</option>
-              <option>키르케</option>
-            </select>
-            <span class="score"></span>
-          </div>
-        </th>
-        <th>
-          <div class="header-cell">
-            <select class="name">
-              <option>이름</option>
-              <option>경희</option>
-              <option>안나</option>
-              <option>카라</option>
-              <option>키르케</option>
-            </select>
-            <span class="score"></span>
-          </div>
-        </th>
+        <th><div class="header-cell"><select class="name">
+          <option>이름</option><option>경희</option><option>안나</option><option>카라</option><option>키르케</option>
+        </select><span class="score"></span></div></th>
+        <th><div class="header-cell"><select class="name">
+          <option>이름</option><option>경희</option><option>안나</option><option>카라</option><option>키르케</option>
+        </select><span class="score"></span></div></th>
+        <th><div class="header-cell"><select class="name">
+          <option>이름</option><option>경희</option><option>안나</option><option>카라</option><option>키르케</option>
+        </select><span class="score"></span></div></th>
+        <th><div class="header-cell"><select class="name">
+          <option>이름</option><option>경희</option><option>안나</option><option>카라</option><option>키르케</option>
+        </select><span class="score"></span></div></th>
       </tr>
     </thead>
     <tbody id="tableBody"></tbody>
   </table>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBCQVBVr9WXt4eK-mr7OZCcs72Y8iKZJBY",
+      authDomain: "enata-consult-order.firebaseapp.com",
+      projectId: "enata-consult-order",
+      storageBucket: "enata-consult-order.firebasestorage.app",
+      messagingSenderId: "1049122668305",
+      appId: "1:1049122668305:web:06c8b31a31bb4b81e7d6b0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     const tableBody = document.getElementById("tableBody");
     const nameRow = document.getElementById("nameRow");
+    const datePicker = document.getElementById("datePicker");
     const scoreMap = { general: 1, designated: 1, reserved: 0.5 };
     const activeTeachers = [false, false, false, false];
+
+    document.getElementById("datePicker").valueAsDate = new Date();
+    let currentDate = datePicker.value;
 
     nameRow.querySelectorAll("select.name").forEach((select, idx) => {
       select.addEventListener("change", function () {
@@ -158,6 +122,11 @@
         updateScores();
         updateNextSuggestions();
       });
+    });
+
+    datePicker.addEventListener("change", (e) => {
+      currentDate = e.target.value;
+      loadSchedule(currentDate);
     });
 
     function createTable(rows = 40) {
@@ -176,22 +145,18 @@
         }
         tableBody.appendChild(tr);
       }
-      updateNextSuggestions();
     }
 
     function toggleType(cell) {
       const row = parseInt(cell.dataset.row);
       const col = parseInt(cell.dataset.col);
-
       if (!activeTeachers[col]) return;
-
       for (let i = 0; i < 4; i++) {
         if (i !== col) {
           const other = tableBody.rows[row].cells[i + 1];
           if (other.className !== "") return;
         }
       }
-
       const states = ["", "general", "designated", "reserved"];
       const current = cell.className;
       const next = states[(states.indexOf(current) + 1) % states.length];
@@ -199,6 +164,7 @@
       cell.textContent = next === "" ? "" : (next === "general" ? "일반" : next === "designated" ? "지명" : "예약");
       updateScores();
       updateNextSuggestions();
+      saveSchedule();
     }
 
     function updateScores() {
@@ -227,7 +193,6 @@
           if (scoreMap[cls] && activeTeachers[i]) scores[i] += scoreMap[cls];
         }
       }
-
       for (let i = 0; i < tableBody.rows.length; i++) {
         const row = tableBody.rows[i];
         const th = row.cells[0];
@@ -252,8 +217,48 @@
       }
     }
 
-    document.getElementById("datePicker").valueAsDate = new Date();
+    async function saveSchedule() {
+      const ref = doc(db, "schedules", currentDate);
+      const slots = Array.from(tableBody.rows).map(row =>
+        Array.from(row.cells).slice(1).map(td => td.className || "")
+      );
+      await setDoc(ref, { slots });
+    }
+
+    async function loadSchedule(dateStr) {
+      const ref = doc(db, "schedules", dateStr);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) {
+        const empty = Array.from({ length: 40 }, () =>
+          Array.from({ length: 4 }, () => "")
+        );
+        await setDoc(ref, { slots: empty });
+      }
+      onSnapshot(ref, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          restoreTable(data.slots);
+        }
+      });
+    }
+
+    function restoreTable(slots) {
+      for (let i = 0; i < 40; i++) {
+        for (let j = 0; j < 4; j++) {
+          const cell = tableBody.rows[i].cells[j + 1];
+          const type = slots?.[i]?.[j] || "";
+          cell.className = type;
+          cell.textContent = type === "general" ? "일반" :
+                             type === "designated" ? "지명" :
+                             type === "reserved" ? "예약" : "";
+        }
+      }
+      updateScores();
+      updateNextSuggestions();
+    }
+
     createTable(40);
+    loadSchedule(currentDate);
   </script>
 </body>
 </html>
