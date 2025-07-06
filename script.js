@@ -4,12 +4,12 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https:/
 
 // 🔐 여기에 본인의 Firebase 설정값 입력
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "SENDER_ID",
-  appId: "APP_ID"
+  apiKey: "AIzaSyBCQVBVr9WXt4eK-mr7OZCcs72Y8iKZJBY",
+  authDomain: "enata-consult-order.firebaseapp.com",
+  projectId: "enata-consult-order",
+  storageBucket: "enata-consult-order.firebasestorage.app",
+  messagingSenderId: "1049122668305",
+  appId: "1:1049122668305:web:06c8b31a31bb4b81e7d6b0"
 };
 
 const app = initializeApp(firebaseConfig);
