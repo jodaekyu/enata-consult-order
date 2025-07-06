@@ -128,9 +128,17 @@ onAuthStateChanged(auth, async (user) => {
 
 nameRow.querySelectorAll("select.name").forEach((select, idx) => {
   select.addEventListener("change", function () {
-    const value = this.value;
-    activeTeachers[idx] = (value !== "이름");
-    this.classList.toggle("selected", value !== "이름");
+    const selected = this.value;
+
+    // ✅ admin인 경우, 본인 이름 외 선택 즉시 차단
+    if (role === "admin" && selected !== currentUserName) {
+      this.value = "이름"; // 초기화
+      return;
+    }
+
+    // ✅ 정상 선택인 경우만 반영
+    activeTeachers[idx] = (selected !== "이름");
+    this.classList.toggle("selected", selected !== "이름");
     updateScores();
     updateNextSuggestions();
   });
