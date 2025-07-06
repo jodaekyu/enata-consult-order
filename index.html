@@ -219,9 +219,17 @@
 
     async function saveSchedule() {
       const ref = doc(db, "schedules", currentDate);
-      const slots = Array.from(tableBody.rows).map(row =>
-        Array.from(row.cells).slice(1).map(td => td.className || "")
-      );
+      const slots = [];
+
+Array.from(tableBody.rows).forEach((row, rowIndex) => {
+  Array.from(row.cells).slice(1).forEach((td, colIndex) => {
+    slots.push({
+      number: rowIndex + 1,
+      col: colIndex,
+      type: td.className || ""
+    });
+  });
+});
       await setDoc(ref, { slots });
     }
 
