@@ -49,6 +49,7 @@ const datePicker = document.getElementById("datePicker");
 const scoreMap = { general: 1, designated: 1, reserved: 0.5 };
 const activeTeachers = [false, false, false, false];
 let currentUserName = "";
+let role = "";
 
 document.getElementById("datePicker").valueAsDate = new Date();
 let currentDate = datePicker.value;
