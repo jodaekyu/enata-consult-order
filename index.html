@@ -220,16 +220,15 @@
     async function saveSchedule() {
       const ref = doc(db, "schedules", currentDate);
       const slots = [];
-
-Array.from(tableBody.rows).forEach((row, rowIndex) => {
-  Array.from(row.cells).slice(1).forEach((td, colIndex) => {
-    slots.push({
-      number: rowIndex + 1,
-      col: colIndex,
-      type: td.className || ""
-    });
-  });
-});
+      Array.from(tableBody.rows).forEach((row, rowIndex) => {
+        Array.from(row.cells).slice(1).forEach((td, colIndex) => {
+          slots.push({
+            row: rowIndex + 1,
+            col: colIndex,
+            type: td.className || ""
+          });
+        });
+      });
       await setDoc(ref, { slots });
     }
 
@@ -237,10 +236,7 @@ Array.from(tableBody.rows).forEach((row, rowIndex) => {
       const ref = doc(db, "schedules", dateStr);
       const snap = await getDoc(ref);
       if (!snap.exists()) {
-        const empty = Array.from({ length: 40 }, () =>
-          Array.from({ length: 4 }, () => "")
-        );
-        await setDoc(ref, { slots: empty });
+        await setDoc(ref, { slots: [] });
       }
       onSnapshot(ref, (docSnap) => {
         if (docSnap.exists()) {
@@ -251,16 +247,15 @@ Array.from(tableBody.rows).forEach((row, rowIndex) => {
     }
 
     function restoreTable(slots) {
-      for (let i = 0; i < 40; i++) {
-        for (let j = 0; j < 4; j++) {
-          const cell = tableBody.rows[i].cells[j + 1];
-          const type = slots?.[i]?.[j] || "";
-          cell.className = type;
-          cell.textContent = type === "general" ? "일반" :
-                             type === "designated" ? "지명" :
-                             type === "reserved" ? "예약" : "";
-        }
-      }
+      createTable(40);
+      slots.forEach(item => {
+        const cell = tableBody.rows[item.row - 1].cells[item.col + 1];
+        const type = item.type;
+        cell.className = type;
+        cell.textContent = type === "general" ? "일반" :
+                           type === "designated" ? "지명" :
+                           type === "reserved" ? "예약" : "";
+      });
       updateScores();
       updateNextSuggestions();
     }
