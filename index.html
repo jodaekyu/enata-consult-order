@@ -129,7 +129,7 @@
       loadSchedule(currentDate);
     });
 
-    function createTable(rows = 40) {
+    function createTable(rows = 60) {
       tableBody.innerHTML = "";
       for (let i = 0; i < rows; i++) {
         const tr = document.createElement("tr");
@@ -252,7 +252,7 @@ async function saveSchedule() {
     }
 
    function restoreTable(slots, teacherNames = []) {
-  createTable(40);
+  createTable(60);
 
   // 선생님 이름 복원
   nameRow.querySelectorAll("select.name").forEach((select, i) => {
@@ -277,7 +277,7 @@ async function saveSchedule() {
   updateNextSuggestions();
 }
 
-    createTable(40);
+    createTable(60);
     loadSchedule(currentDate);
   </script>
 </body>
