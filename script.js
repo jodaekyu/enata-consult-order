@@ -79,17 +79,21 @@ window.signup = function () {
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     const email = user.email;
+
+    // 로그인 후 UI 변경
     document.getElementById("loginBox").style.display = "none";
     document.getElementById("signupBox").style.display = "none";
     document.getElementById("loginStatus").style.display = "none";
     document.getElementById("userEmailDisplay").innerText = `${email} 로그인중`;
 
+    // Firestore에서 별칭 불러오기
     const docSnap = await getDoc(doc(db, "users", user.uid));
     if (docSnap.exists()) {
       currentUserName = docSnap.data().alias || "";
     }
   }
 });
+
 
 nameRow.querySelectorAll("select.name").forEach((select, idx) => {
   select.addEventListener("change", function () {
