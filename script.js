@@ -30,6 +30,22 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+// Firebase 초기화
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+// ✅ 로그인 함수 추가
+window.login = function () {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  signInWithEmailAndPassword(auth, email, password)
+    .catch((error) => {
+      alert("로그인 실패: " + error.message);
+    });
+};
+
 const tableBody = document.getElementById("tableBody");
 const nameRow = document.getElementById("nameRow");
 const datePicker = document.getElementById("datePicker");
