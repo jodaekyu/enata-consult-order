@@ -237,4 +237,25 @@ function restoreTable(slots, teacherNames = []) {
 
   nameRow.querySelectorAll("select.name").forEach((select, i) => {
     const value = teacherNames[i] || "이름";
-    select.value = va
+   select.value = value;
+    activeTeachers[i] = (value !== "이름");
+    select.classList.toggle("selected", value !== "이름");
+  });
+
+  slots.forEach(item => {
+    const cell = tableBody.rows[item.row - 1]?.cells?.[item.col + 1];
+    if (!cell) return;
+    const type = item.type;
+    cell.className = type;
+    cell.textContent =
+      type === "general" ? "일반" :
+      type === "designated" ? "지명" :
+      type === "reserved" ? "예약" : "";
+  });
+
+  updateScores();
+  updateNextSuggestions();
+}
+
+createTable(60);
+loadSchedule(currentDate);
