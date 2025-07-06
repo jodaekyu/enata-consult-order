@@ -26,10 +26,6 @@ const firebaseConfig = {
   appId: "1:1049122668305:web:06c8b31a31bb4b81e7d6b0"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
 // Firebase 초기화
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
