@@ -124,6 +124,11 @@ onAuthStateChanged(auth, async (user) => {
         adminPanel.style.display = "block";
       }
     }
+<p id="userEmailDisplay" style="position: absolute; top: 10px; right: 150px; font-size: 14px; color: #333;"></p>
+<button id="logoutBtn" onclick="logout()" style="position: absolute; top: 10px; right: 10px; display: none;">
+  로그아웃
+</button>
+
 
     // 로그아웃 버튼 보이기
     const logoutBtn = document.getElementById("logoutBtn");
