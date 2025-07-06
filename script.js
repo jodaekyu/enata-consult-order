@@ -162,10 +162,9 @@ function toggleType(cell) {
   const col = parseInt(cell.dataset.col);
 
   const selectedName = nameRow.querySelectorAll("select.name")[col].value;
- 
-  // ✅ 대표(owner)는 전체 편집 가능
+
+  // ✅ 대표(owner)는 제한 없이 전체 열 편집 가능
   if (role !== "owner") {
-    // 일반 admin은 본인 열만 편집 가능
     if (!activeTeachers[col] || currentUserName !== selectedName) {
       alert("본인 이름의 칸만 선택할 수 있어요.");
       return;
@@ -186,6 +185,7 @@ function toggleType(cell) {
   updateNextSuggestions();
   saveSchedule();
 }
+
 
 function updateScores() {
   const scores = [0, 0, 0, 0];
