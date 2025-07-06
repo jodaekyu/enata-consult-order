@@ -299,7 +299,8 @@ async function loadTeacherAliases() {
   const aliases = [];
   querySnapshot.forEach((doc) => {
     const data = doc.data();
-    if (data.alias) aliases.push(data.alias);
+    if (data.alias && !data.hidden) {
+  aliases.push(data.alias);
   });
 
   document.querySelectorAll("select.name").forEach(select => {
