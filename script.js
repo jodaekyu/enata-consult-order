@@ -101,6 +101,8 @@ onAuthStateChanged(auth, async (user) => {
       const data = docSnap.data();
       currentUserName = data.alias || "";
 
+ role = data.role || "admin";  // 기본값은 admin
+
       // 👉 관리자 여부 확인
       const isAdmin = data.role === "admin";
 
