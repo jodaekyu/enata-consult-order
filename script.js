@@ -297,10 +297,12 @@ function restoreTable(slots, teacherNames = []) {
 async function loadTeacherAliases() {
   const querySnapshot = await getDocs(collection(db, "users"));
   const aliases = [];
+
   querySnapshot.forEach((doc) => {
     const data = doc.data();
     if (data.alias && !data.hidden) {
-  aliases.push(data.alias);
+      aliases.push(data.alias);
+    }
   });
 
   document.querySelectorAll("select.name").forEach(select => {
