@@ -75,10 +75,9 @@ window.signup = function () {
     });
 };
 
-// 로그인 상태 감지
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-   const loginBox = document.getElementById("loginBox");
+    const loginBox = document.getElementById("loginBox");
     const signupBox = document.getElementById("signupBox");
     const loginStatus = document.getElementById("loginStatus");
     const userEmailDisplay = document.getElementById("userEmailDisplay");
@@ -86,15 +85,32 @@ onAuthStateChanged(auth, async (user) => {
     if (loginBox) loginBox.style.display = "none";
     if (signupBox) signupBox.style.display = "none";
     if (loginStatus) loginStatus.style.display = "none";
+
+    // 유저명 표시
     if (userEmailDisplay) {
       const idOnly = user.email.split("@")[0];
       userEmailDisplay.innerText = `${idOnly} (로그인성공)`;
     }
 
-    // 별칭 받아서 currentUserName 설정
+    // 사용자 정보 가져오기
     const docSnap = await getDoc(doc(db, "users", user.uid));
     if (docSnap.exists()) {
-      currentUserName = docSnap.data().alias || "";
+      const data = docSnap.data();
+      currentUserName = data.alias || "";
+
+      // 👉 관리자 여부 확인
+      const isAdmin = data.role === "admin";
+
+      // (선택) 관리자 여부 UI에 표시
+      if (userEmailDisplay && isAdmin) {
+        userEmailDisplay.innerText += " - 관리자";
+      }
+
+      // 관리자 전용 UI 보이기
+      const adminPanel = document.getElementById("adminPanel");
+      if (isAdmin && adminPanel) {
+        adminPanel.style.display = "block";
+      }
     }
 
     // 로그아웃 버튼 보이기
@@ -102,6 +118,7 @@ onAuthStateChanged(auth, async (user) => {
     if (logoutBtn) logoutBtn.style.display = "inline-block";
   }
 });
+
 
 
 nameRow.querySelectorAll("select.name").forEach((select, idx) => {
