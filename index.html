@@ -85,6 +85,14 @@
     <label for="datePicker">날짜 선택: </label>
     <input type="date" id="datePicker">
   </div>
+<!-- 🔐 로그인 UI 삽입 -->
+<div id="loginBox" style="text-align: center; margin-bottom: 20px;">
+  <input type="email" id="email" placeholder="이메일" style="margin-right: 5px;" />
+  <input type="password" id="password" placeholder="비밀번호" style="margin-right: 5px;" />
+  <button onclick="login()">로그인</button>
+</div>
+<p id="loginStatus" style="text-align: center; font-weight: bold; color: darkblue;"></p>
+
   <div class="table-wrapper">
     <table id="orderTable">
       <thead>
