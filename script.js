@@ -56,13 +56,22 @@ window.login = function () {
 window.signup = function () {
   const email = document.getElementById("signupEmail").value;
   const password = document.getElementById("signupPassword").value;
+  const alias = document.getElementById("signupAlias").value;
 
-  if (!email || !password) {
-    alert("이메일과 비밀번호를 입력해주세요.");
+  if (!email || !password || !alias) {
+    alert("이메일, 비밀번호, 별칭을 모두 입력해주세요.");
     return;
   }
 
   createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      const uid = userCredential.user.uid;
+      // Firestore에 사용자 정보 저장
+      return setDoc(doc(db, "users", uid), {
+        email,
+        alias
+      });
+    })
     .then(() => {
       document.getElementById("signupStatus").innerText = "회원가입 성공! 로그인해주세요.";
     })
@@ -70,6 +79,7 @@ window.signup = function () {
       alert("회원가입 실패: " + error.message);
     });
 };
+
 
 // 로그인 상태 감지
 onAuthStateChanged(auth, (user) => {
