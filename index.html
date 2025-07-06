@@ -247,8 +247,8 @@
     }
 
     function restoreTable(slots) {
-      createTable(40);
-      slots.forEach(item => {
+ if (!tableBody.rows.length) createTable(40);  // <- 안전장치
+        slots.forEach(item => {
         const cell = tableBody.rows[item.row - 1].cells[item.col + 1];
         const type = item.type;
         cell.className = type;
