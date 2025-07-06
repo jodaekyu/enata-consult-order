@@ -340,3 +340,14 @@ window.openUserDeletion = async function () {
     }
   }
 };
+
+window.logout = function () {
+  signOut(auth)
+    .then(() => {
+      location.reload();  // 새로고침으로 초기화
+    })
+    .catch((error) => {
+      alert("로그아웃 실패: " + error.message);
+    });
+};
+
