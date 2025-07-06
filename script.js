@@ -78,25 +78,28 @@ window.signup = function () {
 // 로그인 상태 감지
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    const email = user.email;
-    const idOnly = email.split("@")[0];  // 여기! '@' 앞부분만 추출
+   const loginBox = document.getElementById("loginBox");
+    const signupBox = document.getElementById("signupBox");
+    const loginStatus = document.getElementById("loginStatus");
+    const userEmailDisplay = document.getElementById("userEmailDisplay");
 
-   // 화면 UI 갱신
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("signupBox").style.display = "none";
-    document.getElementById("loginStatus").style.display = "none";
+    if (loginBox) loginBox.style.display = "none";
+    if (signupBox) signupBox.style.display = "none";
+    if (loginStatus) loginStatus.style.display = "none";
+    if (userEmailDisplay) {
+      const idOnly = user.email.split("@")[0];
+      userEmailDisplay.innerText = `${idOnly} (로그인성공)`;
+    }
 
-    // 오른쪽 위에 아이디만 + '로그인 성공' 표시
-    document.getElementById("userEmailDisplay").innerText = `${idOnly} (로그인 성공)`;
-
-    // 로그아웃 버튼 보이게
-    document.getElementById("logoutBtn").style.display = "inline-block";
-
-    // 별칭 가져와서 currentUserName 설정
+    // 별칭 받아서 currentUserName 설정
     const docSnap = await getDoc(doc(db, "users", user.uid));
     if (docSnap.exists()) {
       currentUserName = docSnap.data().alias || "";
     }
+
+    // 로그아웃 버튼 보이기
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) logoutBtn.style.display = "inline-block";
   }
 });
 
