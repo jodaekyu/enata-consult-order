@@ -12,8 +12,7 @@ import {
   getDoc,
   setDoc,
   getDocs,
-  collection,
-  onSnapshot
+import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Firebase 설정값
@@ -549,8 +548,7 @@ document.addEventListener("DOMContentLoaded", () => {
   getDoc,
   setDoc,
   getDocs,
-  collection,
-  onSnapshot
+import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Firebase 설정값
