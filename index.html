@@ -10,14 +10,6 @@
       padding: 20px;
       background: #f5f5f5;
     }
-
-td, th, input, select, button {
-  user-select: none;
-  -webkit-user-select: none;       /* iOS, Safari */
-  -webkit-touch-callout: none;     /* iOS 길게 눌렀을 때 팝업 차단 */
-  -ms-user-select: none;           /* IE */
-}
-
     h1 {
       text-align: center;
     }
@@ -85,102 +77,32 @@ td, th, input, select, button {
       .header-cell { min-width: 60px; }
       .score { font-size: 12px; }
     }
-  
-  .payment-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-  .payment-row label {
-    width: 100px;
-    font-weight: bold;
-  }
-  .payment-row input {
-    flex: 1;
-    padding: 6px;
-    font-size: 14px;
-  }
-
-  .payment-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-  .payment-row label {
-    width: 100px;
-    font-weight: bold;
-  }
-  .payment-row input {
-    flex: 1;
-    padding: 6px;
-    font-size: 14px;
-  }
-
-  @media (max-width: 600px) {
-    #paymentPopup > div {
-      width: 90%;
-      height: 90vh;
-      overflow-y: auto;
-      margin: 5vh auto;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-    input, select, button {
-      font-size: 16px;
-      width: 100%;
-      margin-bottom: 10px;
-    }
-  }
-</style>
+  </style>
 </head>
 <body>
- <p id="userEmailDisplay"  style="position: absolute; top: 12px; left: 10px; font-size: 14px; color: #333; margin: 0; line-height: 1.5;">
-</p>
-
-<button id="logoutBtn" onclick="logout()" style="position: absolute; top: 10px; right: 10px; display: none;"padding: 4px 8px; font-size: 14px;">
-  로그아웃
-</button>
-
   <h1>에나타 상담 순서표</h1>
   <div class="date-area">
     <label for="datePicker">날짜 선택: </label>
     <input type="date" id="datePicker">
   </div>
-<!-- 🔐 로그인 UI 삽입 -->
-<div id="loginBox" style="text-align: center; margin-bottom: 20px;">
-  <input type="email" id="email" placeholder="이메일" style="margin-right: 5px;" />
-  <input type="password" id="password" placeholder="비밀번호" style="margin-right: 5px;" />
-  <button onclick="login()">로그인</button>
-</div>
-<p id="loginStatus" style="text-align: center; font-weight: bold; color: darkblue;"></p>
-
-<!-- 🔐 회원가입 UI -->
-<!-- 🔐 회원가입 UI -->
-<div id="signupBox" style="text-align: center; margin-bottom: 20px;">
-  <input type="email" id="signupEmail" placeholder="회원가입 이메일" style="margin-right: 5px;" />
-  <input type="password" id="signupPassword" placeholder="비밀번호" style="margin-right: 5px;" />
-  <input type="text" id="signupAlias" placeholder="별칭 (예: 경희)" style="margin-right: 5px;" />
-  <button onclick="signup()">회원가입</button>
-</div>
-<p id="signupStatus" style="text-align: center; color: green;"></p>
-<div id="adminPanel" style="display: none;">
-  <h2>📊 관리자 전용 패널</h2>
-  <button onclick="viewAllRevenue()">전체 매출 보기</button>
-  <button onclick="openUserDeletion()">선생님 삭제</button>
-</div>
-
   <div class="table-wrapper">
     <table id="orderTable">
       <thead>
         <tr id="nameRow">
-  <th>순서</th>
-  <th><div class="header-cell"><select class="name"><option>이름</option></select><span class="score"></span></div></th>
-  <th><div class="header-cell"><select class="name"><option>이름</option></select><span class="score"></span></div></th>
-  <th><div class="header-cell"><select class="name"><option>이름</option></select><span class="score"></span></div></th>
-  <th><div class="header-cell"><select class="name"><option>이름</option></select><span class="score"></span></div></th>
-</tr>
+          <th>순서</th>
+          <th><div class="header-cell"><select class="name">
+            <option>이름</option><option>경희</option><option>안나</option><option>카라</option><option>키르케</option>
+          </select><span class="score"></span></div></th>
+          <th><div class="header-cell"><select class="name">
+            <option>이름</option><option>경희</option><option>안나</option><option>카라</option><option>키르케</option>
+          </select><span class="score"></span></div></th>
+          <th><div class="header-cell"><select class="name">
+            <option>이름</option><option>경희</option><option>안나</option><option>카라</option><option>키르케</option>
+          </select><span class="score"></span></div></th>
+          <th><div class="header-cell"><select class="name">
+            <option>이름</option><option>경희</option><option>안나</option><option>카라</option><option>키르케</option>
+          </select><span class="score"></span></div></th>
+        </tr>
       </thead>
       <tbody id="tableBody"></tbody>
     </table>
@@ -376,77 +298,6 @@ async function saveSchedule() {
 
     createTable(60);
     loadSchedule(currentDate);
-
-// ✅ 2번. 로그아웃 함수는 여기에 추가
-window.logout = function () {
-  signOut(auth)
-    .then(() => {
-      location.reload();  // 새로고침으로 전체 초기화
-    })
-    .catch((error) => {
-      alert("로그아웃 실패: " + error.message);
-    });
-};
   </script>
-<script type="module" src="script_complete_no_errors.js"></script>
-
-<!-- 💳 결제 팝업 (개선된 금액 입력 + 신규 고객 등록) -->
-<div id="paymentPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#00000088; z-index:1000;">
-  <div style="max-width:400px; margin:100px auto; background:#fff; padding:20px; border-radius:10px;">
-    <h3>결제 정보 입력</h3>
-
-    <label>전화번호 (아이디)</label>
-    <input type="text" id="customerPhone" placeholder="010-xxxx-xxxx" style="width:100%" />
-
-    <label>이름</label>
-    <input type="text" id="customerName" style="width:100%" />
-
-    <label>생년월일</label>
-    <div style="display: flex; gap: 5px;">
-      <select id="birthYear"></select>
-      <select id="birthMonth"></select>
-      <select id="birthDay"></select>
-    </div>
-
-    <label>태어난 시간</label>
-    <div style="display: flex; gap: 5px;">
-      <select id="birthHour"></select>
-      <select id="birthMinute"></select>
-    </div>
-
-    
-
-<div class="payment-row">
-  <label>카드 결제</label>
-  <input type="text" id="cardAmount" />
-</div>
-<div class="payment-row">
-  <label>현금 결제</label>
-  <input type="text" id="cashAmount" />
-</div>
-<div class="payment-row">
-  <label>계좌 송금</label>
-  <input type="text" id="bankAmount" />
-</div>
-<div class="payment-row">
-  <label>네이버페이</label>
-  <input type="text" id="naverAmount" />
-</div>
-<div class="payment-row">
-  <label>기타</label>
-  <input type="text" id="etcAmount" />
-</div>
-
-<div><strong>총 합계: <span id="totalAmount">0</span> 원</strong></div>
-    <div><strong>포인트 적립: <span id="rewardPoint">0</span> P</strong></div>
-
-    <hr />
-    <button id="submitPayment">저장</button>
-    <button onclick="document.getElementById('paymentPopup').style.display='none'">닫기</button>
-  </div>
-</div>
-
-
-
 </body>
 </html>
