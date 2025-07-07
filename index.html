@@ -80,29 +80,53 @@
   </style>
 </head>
 <body>
+ <p id="userEmailDisplay" style="position: absolute; top: 10px; lift: 10px; font-size: 14px; color: #333;"></p>
+ <p id="userEmailDisplay"  style="position: absolute; top: 12px; left: 10px; font-size: 14px; color: #333; margin: 0; line-height: 1.5;">
+</p>
+
+<button id="logoutBtn" onclick="logout()" style="position: absolute; top: 10px; right: 10px; display: none;">
+<button id="logoutBtn" onclick="logout()" style="position: absolute; top: 10px; right: 10px; display: none;"padding: 4px 8px; font-size: 14px;">
+  로그아웃
+</button>
+
   <h1>에나타 상담 순서표</h1>
   <div class="date-area">
     <label for="datePicker">날짜 선택: </label>
     <input type="date" id="datePicker">
   </div>
+<!-- 🔐 로그인 UI 삽입 -->
+<div id="loginBox" style="text-align: center; margin-bottom: 20px;">
+  <input type="email" id="email" placeholder="이메일" style="margin-right: 5px;" />
+  <input type="password" id="password" placeholder="비밀번호" style="margin-right: 5px;" />
+  <button onclick="login()">로그인</button>
+</div>
+<p id="loginStatus" style="text-align: center; font-weight: bold; color: darkblue;"></p>
+
+<!-- 🔐 회원가입 UI -->
+<!-- 🔐 회원가입 UI -->
+<div id="signupBox" style="text-align: center; margin-bottom: 20px;">
+  <input type="email" id="signupEmail" placeholder="회원가입 이메일" style="margin-right: 5px;" />
+  <input type="password" id="signupPassword" placeholder="비밀번호" style="margin-right: 5px;" />
+  <input type="text" id="signupAlias" placeholder="별칭 (예: 경희)" style="margin-right: 5px;" />
+  <button onclick="signup()">회원가입</button>
+</div>
+<p id="signupStatus" style="text-align: center; color: green;"></p>
+<div id="adminPanel" style="display: none;">
+  <h2>📊 관리자 전용 패널</h2>
+  <button onclick="viewAllRevenue()">전체 매출 보기</button>
+  <button onclick="openUserDeletion()">선생님 삭제</button>
+</div>
+
   <div class="table-wrapper">
     <table id="orderTable">
       <thead>
         <tr id="nameRow">
-          <th>순서</th>
-          <th><div class="header-cell"><select class="name">
-            <option>이름</option><option>경희</option><option>안나</option><option>카라</option><option>키르케</option>
-          </select><span class="score"></span></div></th>
-          <th><div class="header-cell"><select class="name">
-            <option>이름</option><option>경희</option><option>안나</option><option>카라</option><option>키르케</option>
-          </select><span class="score"></span></div></th>
-          <th><div class="header-cell"><select class="name">
-            <option>이름</option><option>경희</option><option>안나</option><option>카라</option><option>키르케</option>
-          </select><span class="score"></span></div></th>
-          <th><div class="header-cell"><select class="name">
-            <option>이름</option><option>경희</option><option>안나</option><option>카라</option><option>키르케</option>
-          </select><span class="score"></span></div></th>
-        </tr>
+  <th>순서</th>
+  <th><div class="header-cell"><select class="name"><option>이름</option></select><span class="score"></span></div></th>
+  <th><div class="header-cell"><select class="name"><option>이름</option></select><span class="score"></span></div></th>
+  <th><div class="header-cell"><select class="name"><option>이름</option></select><span class="score"></span></div></th>
+  <th><div class="header-cell"><select class="name"><option>이름</option></select><span class="score"></span></div></th>
+</tr>
       </thead>
       <tbody id="tableBody"></tbody>
     </table>
@@ -298,6 +322,18 @@ async function saveSchedule() {
 
     createTable(60);
     loadSchedule(currentDate);
+
+// ✅ 2번. 로그아웃 함수는 여기에 추가
+window.logout = function () {
+  signOut(auth)
+    .then(() => {
+      location.reload();  // 새로고침으로 전체 초기화
+    })
+    .catch((error) => {
+      alert("로그아웃 실패: " + error.message);
+    });
+};
   </script>
+<script type="module" src="script.js"></script>
 </body>
 </html>
