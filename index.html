@@ -101,6 +101,38 @@ td, th, input, select, button {
     padding: 6px;
     font-size: 14px;
   }
+
+  .payment-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .payment-row label {
+    width: 100px;
+    font-weight: bold;
+  }
+  .payment-row input {
+    flex: 1;
+    padding: 6px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 600px) {
+    #paymentPopup > div {
+      width: 90%;
+      height: 90vh;
+      overflow-y: auto;
+      margin: 5vh auto;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    input, select, button {
+      font-size: 16px;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  }
 </style>
 </head>
 <body>
@@ -356,7 +388,7 @@ window.logout = function () {
     });
 };
   </script>
-<script type="module" src="script.js"></script>
+<script type="module" src="script_complete_no_errors.js"></script>
 
 <!-- 💳 결제 팝업 (개선된 금액 입력 + 신규 고객 등록) -->
 <div id="paymentPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#00000088; z-index:1000;">
@@ -383,6 +415,7 @@ window.logout = function () {
     </div>
 
     
+
 <div class="payment-row">
   <label>카드 결제</label>
   <input type="text" id="cardAmount" />
@@ -404,8 +437,7 @@ window.logout = function () {
   <input type="text" id="etcAmount" />
 </div>
 
-    <hr />
-    <div><strong>총 합계: <span id="totalAmount">0</span> 원</strong></div>
+<div><strong>총 합계: <span id="totalAmount">0</span> 원</strong></div>
     <div><strong>포인트 적립: <span id="rewardPoint">0</span> P</strong></div>
 
     <hr />
