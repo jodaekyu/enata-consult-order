@@ -399,6 +399,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const kakao = document.getElementById('kakaoAmount');
   const etc = document.getElementById('etcAmount');
 
+  // 📱 모바일: 복사/공유/번역 팝업 방지
+  document.querySelectorAll("td, th, input, select, button").forEach(el => {
+    el.style.userSelect = "none";
+    el.style.webkitUserSelect = "none";
+    el.style.webkitTouchCallout = "none";
+  });
+
+
   function updateTotal() {
     const total = [card, cash, bank, kakao, etc]
       .map(input => parseInt(input.value.replace(/,/g, "")) || 0)
