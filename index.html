@@ -334,29 +334,45 @@ window.logout = function () {
   </script>
 <script type="module" src="script.js"></script>
 
-<!-- 💳 결제 입력 팝업 -->
+<!-- 💳 결제 팝업 (개선된 금액 입력 + 신규 고객 등록) -->
 <div id="paymentPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#00000088; z-index:1000;">
   <div style="max-width:400px; margin:100px auto; background:#fff; padding:20px; border-radius:10px;">
     <h3>결제 정보 입력</h3>
-    <label>고객 전화번호</label>
+
+    <label>전화번호 (아이디)</label>
     <input type="text" id="customerPhone" placeholder="010-xxxx-xxxx" style="width:100%" />
-    <div id="customerInfo" style="margin-top:5px; font-size:0.9em; color:gray;"></div>
+
+    <label>이름</label>
+    <input type="text" id="customerName" style="width:100%" />
+
+    <label>생년월일</label>
+    <div style="display: flex; gap: 5px;">
+      <select id="birthYear"></select>
+      <select id="birthMonth"></select>
+      <select id="birthDay"></select>
+    </div>
+
+    <label>태어난 시간</label>
+    <div style="display: flex; gap: 5px;">
+      <select id="birthHour"></select>
+      <select id="birthMinute"></select>
+    </div>
 
     <hr />
     <label>카드 결제</label>
-    <input type="number" id="cardAmount" value="0" style="width:100%" />
+    <input type="text" id="cardAmount" />
 
     <label>현금 결제</label>
-    <input type="number" id="cashAmount" value="0" style="width:100%" />
+    <input type="text" id="cashAmount" />
 
     <label>계좌 송금</label>
-    <input type="number" id="bankAmount" value="0" style="width:100%" />
+    <input type="text" id="bankAmount" />
 
     <label>카카오페이</label>
-    <input type="number" id="kakaoAmount" value="0" style="width:100%" />
+    <input type="text" id="kakaoAmount" />
 
     <label>기타</label>
-    <input type="number" id="etcAmount" value="0" style="width:100%" />
+    <input type="text" id="etcAmount" />
 
     <hr />
     <div><strong>총 합계: <span id="totalAmount">0</span> 원</strong></div>
@@ -367,6 +383,7 @@ window.logout = function () {
     <button onclick="document.getElementById('paymentPopup').style.display='none'">닫기</button>
   </div>
 </div>
+
 
 
 </body>
