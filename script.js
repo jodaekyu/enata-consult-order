@@ -398,6 +398,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const bank = document.getElementById('bankAmount');
   const kakao = document.getElementById('kakaoAmount');
   const etc = document.getElementById('etcAmount');
+  const naver = document.getElementById('naverAmount');
 
   // 📱 모바일: 복사/공유/번역 팝업 방지
   document.querySelectorAll("td, th, input, select, button").forEach(el => {
@@ -408,7 +409,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   function updateTotal() {
-    const total = [card, cash, bank, kakao, etc]
+    const total = [card, cash, bank, kakao, etc, naver]
       .map(input => parseInt(input.value.replace(/,/g, "")) || 0)
       .reduce((a, b) => a + b, 0);
     document.getElementById("totalAmount").textContent = total.toLocaleString();
@@ -494,9 +495,9 @@ tableBody.addEventListener("touchend", cancelPressTimer);
     for (let h = 0; h < 24; h++) {
       hourSel.innerHTML += `<option value="${String(h).padStart(2, "0")}">${h}시</option>`;
     }
-    for (let m = 0; m < 60; m++) {
-  minSel.innerHTML += `<option value="${String(m).padStart(2, "0")}">${m}분</option>`;
-}
+    for (let m = 0; m < 60; m += 5) {
+      minSel.innerHTML += `<option value="${String(m).padStart(2, "0")}">${m}분</option>`;
+    }
   }
 
   populateDateDropdowns();
