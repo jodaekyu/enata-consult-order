@@ -1,7 +1,8 @@
-// Firebase SDK 모듈 임포트
 import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
+
+// Firebase SDK 모듈 임포트
   getAuth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -98,8 +99,6 @@ onAuthStateChanged(auth, async (user) => {
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) logoutBtn.style.display = "inline-block";
 
-
-
 nameRow.querySelectorAll("select.name").forEach((select, idx) => {
   select.addEventListener("change", function () {
     const selected = this.value;
@@ -179,7 +178,6 @@ function findNextEmptyRow(col) {
     if (isRowEmpty) return i;
   return -1; // 없으면 -1 반환
 
-
 function updateScores() {
   const scores = [0, 0, 0, 0];
   for (let row of tableBody.rows) {
@@ -227,7 +225,6 @@ async function saveSchedule() {
 
   const teacherNames = Array.from(nameRow.querySelectorAll("select.name"))
                             .map(select => select.value);
-
 
 async function loadSchedule(dateStr) {
   const ref = doc(db, "schedules", dateStr);
@@ -509,8 +506,6 @@ let currentDate = datePicker.value;
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) logoutBtn.style.display = "inline-block";
 
-
-
 nameRow.querySelectorAll("select.name").forEach((select, idx) => {
   select.addEventListener("change", function () {
     const selected = this.value;
@@ -590,7 +585,6 @@ function findNextEmptyRow(col) {
     if (isRowEmpty) return i;
   return -1; // 없으면 -1 반환
 
-
 function updateScores() {
   const scores = [0, 0, 0, 0];
   for (let row of tableBody.rows) {
@@ -638,7 +632,6 @@ async function saveSchedule() {
 
   const teacherNames = Array.from(nameRow.querySelectorAll("select.name"))
                             .map(select => select.value);
-
 
 async function loadSchedule(dateStr) {
   const ref = doc(db, "schedules", dateStr);
