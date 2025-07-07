@@ -391,3 +391,48 @@ window.logout = function () {
     });
 };
 
+// 🔄 결제 금액 입력 요소
+const card = document.getElementById('cardAmount');
+const cash = document.getElementById('cashAmount');
+const bank = document.getElementById('bankAmount');
+const kakao = document.getElementById('kakaoAmount');
+const etc = document.getElementById('etcAmount');
+
+// 🔄 합계/포인트 계산
+function updateTotal() {
+  const total = [card, cash, bank, kakao, etc].map(input => parseInt(input.value) || 0).reduce((a, b) => a + b, 0);
+  document.getElementById("totalAmount").textContent = total.toLocaleString();
+  document.getElementById("rewardPoint").textContent = Math.floor(total * 0.1).toLocaleString();
+}
+[card, cash, bank, kakao, etc].forEach(input => input.addEventListener("input", updateTotal));
+
+// 📞 고객번호 입력 시 고객 정보 조회
+document.getElementById("customerPhone").addEventListener("change", async (e) => {
+  const phone = e.target.value.trim();
+  const q = query(collection(db, "customers"), where("phone", "==", phone));
+  const snapshot = await getDocs(q);
+  if (!snapshot.empty) {
+    const data = snapshot.docs[0].data();
+    document.getElementById("customerInfo").textContent = `이름: ${data.name} / 생일: ${data.birth}`;
+  } else {
+    document.getElementById("customerInfo").textContent = "고객 정보를 찾을 수 없습니다.";
+  }
+});
+
+// 🧲 셀 길게 누르면 팝업 열기
+let pressTimer;
+tableBody.addEventListener("mousedown", (e) => {
+  const cell = e.target.closest("td");
+  if (!cell) return;
+  pressTimer = setTimeout(() => {
+    openPaymentPopup();
+  }, 800);
+});
+tableBody.addEventListener("mouseup", () => clearTimeout(pressTimer));
+
+// 팝업 열기 함수
+function openPaymentPopup() {
+  document.getElementById("paymentPopup").style.display = "block";
+  updateTotal();
+}
+
