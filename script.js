@@ -432,15 +432,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  let pressTimer;
-  tableBody.addEventListener("mousedown", (e) => {
-    const cell = e.target.closest("td");
-    if (!cell) return;
-    pressTimer = setTimeout(() => {
-      openPaymentPopup();
-    }, 800);
-  });
-  tableBody.addEventListener("mouseup", () => clearTimeout(pressTimer));
+  // 📱 + 🖱 셀 길게 누르면 팝업 열기 (모바일 대응)
+let pressTimer;
+
+function startPressTimer(cell) {
+  pressTimer = setTimeout(() => {
+    openPaymentPopup();
+  }, 800);
+}
+
+function cancelPressTimer() {
+  clearTimeout(pressTimer);
+}
+
+tableBody.addEventListener("mousedown", (e) => {
+  const cell = e.target.closest("td");
+  if (!cell) return;
+  startPressTimer(cell);
+});
+tableBody.addEventListener("mouseup", cancelPressTimer);
+tableBody.addEventListener("mouseleave", cancelPressTimer);
+
+tableBody.addEventListener("touchstart", (e) => {
+  const cell = e.target.closest("td");
+  if (!cell) return;
+  startPressTimer(cell);
+});
+tableBody.addEventListener("touchend", cancelPressTimer);
+
 
   function openPaymentPopup() {
     document.getElementById("paymentPopup").style.display = "block";
