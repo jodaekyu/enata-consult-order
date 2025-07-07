@@ -436,3 +436,58 @@ function openPaymentPopup() {
   updateTotal();
 }
 
+// 📌 날짜 드롭다운 구성
+function populateDateDropdowns() {
+  const yearSel = document.getElementById("birthYear");
+  const monthSel = document.getElementById("birthMonth");
+  const daySel = document.getElementById("birthDay");
+  const hourSel = document.getElementById("birthHour");
+  const minSel = document.getElementById("birthMinute");
+
+  const now = new Date();
+  for (let y = now.getFullYear(); y >= 1920; y--) {
+    yearSel.innerHTML += `<option value="${y}">${y}년</option>`;
+  }
+  for (let m = 1; m <= 12; m++) {
+    monthSel.innerHTML += `<option value="${m.toString().padStart(2, '0')}">${m}월</option>`;
+  }
+  for (let d = 1; d <= 31; d++) {
+    daySel.innerHTML += `<option value="${d.toString().padStart(2, '0')}">${d}일</option>`;
+  }
+  for (let h = 0; h < 24; h++) {
+    hourSel.innerHTML += `<option value="${h.toString().padStart(2, '0')}">${h}시</option>`;
+  }
+  for (let m = 0; m < 60; m += 5) {
+    minSel.innerHTML += `<option value="${m.toString().padStart(2, '0')}">${m}분</option>`;
+  }
+}
+populateDateDropdowns();
+
+// 🧮 쉼표 자동 포맷 입력 함수
+function formatCurrencyInput(input) {
+  input.addEventListener("input", () => {
+    const raw = input.value.replace(/[^\d]/g, "");
+    input.value = raw.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    updateTotal();
+  });
+}
+
+["cardAmount", "cashAmount", "bankAmount", "kakaoAmount", "etcAmount"].forEach(id => {
+  const el = document.getElementById(id);
+  formatCurrencyInput(el);
+});
+
+// 💰 총합 계산
+function updateTotal() {
+  const getRaw = id => parseInt(document.getElementById(id).value.replace(/,/g, "")) || 0;
+  const total = getRaw("cardAmount") + getRaw("cashAmount") + getRaw("bankAmount") + getRaw("kakaoAmount") + getRaw("etcAmount");
+  document.getElementById("totalAmount").textContent = total.toLocaleString();
+  document.getElementById("rewardPoint").textContent = Math.floor(total * 0.1).toLocaleString();
+}
+
+// 🧲 팝업 열기
+function openPaymentPopup() {
+  document.getElementById("paymentPopup").style.display = "block";
+  updateTotal();
+}
+
