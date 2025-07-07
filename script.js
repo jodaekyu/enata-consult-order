@@ -7,7 +7,6 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
   getFirestore,
   doc,
   getDoc,
@@ -28,9 +27,6 @@ const firebaseConfig = {
 };
 
 // Firebase 초기화
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
 
 // ✅ 로그인 함수 추가
 window.login = function () {
@@ -545,15 +541,10 @@ document.addEventListener("DOMContentLoaded", () => {
   populateDateDropdowns();
 });
 // Firebase SDK 모듈 임포트
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getAuth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
-  getFirestore,
   doc,
   getDoc,
   setDoc,
@@ -563,7 +554,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Firebase 설정값
-const firebaseConfig = {
   apiKey: "AIzaSyBCQVBVr9WXt4eK-mr7OZCcs72Y8iKZJBY",
   authDomain: "enata-consult-order.firebaseapp.com",
   projectId: "enata-consult-order",
@@ -573,12 +563,8 @@ const firebaseConfig = {
 };
 
 // Firebase 초기화
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
 
 // ✅ 로그인 함수 추가
-window.login = function () {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
@@ -600,7 +586,6 @@ document.getElementById("datePicker").valueAsDate = new Date();
 let currentDate = datePicker.value;
 
 // 🔐 회원가입 함수
-window.signup = function () {
   const email = document.getElementById("signupEmail").value;
   const password = document.getElementById("signupPassword").value;
   const alias = document.getElementById("signupAlias").value;
@@ -623,7 +608,6 @@ window.signup = function () {
     });
 };
 
-onAuthStateChanged(auth, async (user) => {
   if (user) {
     const loginBox = document.getElementById("loginBox");
     const signupBox = document.getElementById("signupBox");
