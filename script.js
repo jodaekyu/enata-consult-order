@@ -494,9 +494,9 @@ tableBody.addEventListener("touchend", cancelPressTimer);
     for (let h = 0; h < 24; h++) {
       hourSel.innerHTML += `<option value="${String(h).padStart(2, "0")}">${h}시</option>`;
     }
-    for (let m = 0; m < 60; m += 5) {
-      minSel.innerHTML += `<option value="${String(m).padStart(2, "0")}">${m}분</option>`;
-    }
+    for (let m = 0; m < 60; m++) {
+  minSel.innerHTML += `<option value="${String(m).padStart(2, "0")}">${m}분</option>`;
+}
   }
 
   populateDateDropdowns();
