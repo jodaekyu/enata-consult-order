@@ -85,7 +85,23 @@ td, th, input, select, button {
       .header-cell { min-width: 60px; }
       .score { font-size: 12px; }
     }
-  </style>
+  
+  .payment-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .payment-row label {
+    width: 100px;
+    font-weight: bold;
+  }
+  .payment-row input {
+    flex: 1;
+    padding: 6px;
+    font-size: 14px;
+  }
+</style>
 </head>
 <body>
  <p id="userEmailDisplay"  style="position: absolute; top: 12px; left: 10px; font-size: 14px; color: #333; margin: 0; line-height: 1.5;">
@@ -366,21 +382,27 @@ window.logout = function () {
       <select id="birthMinute"></select>
     </div>
 
-    <hr />
-    <label>카드 결제</label>
-    <input type="text" id="cardAmount" />
-
-    <label>현금 결제</label>
-    <input type="text" id="cashAmount" />
-
-    <label>계좌 송금</label>
-    <input type="text" id="bankAmount" />
-
-    <label>카카오페이</label>
-    <input type="text" id="kakaoAmount" />
-
-    <label>기타</label>
-    <input type="text" id="etcAmount" />
+    
+<div class="payment-row">
+  <label>카드 결제</label>
+  <input type="text" id="cardAmount" />
+</div>
+<div class="payment-row">
+  <label>현금 결제</label>
+  <input type="text" id="cashAmount" />
+</div>
+<div class="payment-row">
+  <label>계좌 송금</label>
+  <input type="text" id="bankAmount" />
+</div>
+<div class="payment-row">
+  <label>네이버페이</label>
+  <input type="text" id="naverAmount" />
+</div>
+<div class="payment-row">
+  <label>기타</label>
+  <input type="text" id="etcAmount" />
+</div>
 
     <hr />
     <div><strong>총 합계: <span id="totalAmount">0</span> 원</strong></div>
