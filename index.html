@@ -5,6 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>에나타 상담 순서표</title>
   <style>
+/* 💳 결제 팝업 스타일 */
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  z-index: 10000;
+  width: 90%;
+  max-width: 400px;
+}
+
+.popup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.popup-content input[type="text"],
+.popup-content input[type="number"],
+.popup-content select {
+  padding: 6px;
+  font-size: 15px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
     body {
       font-family: sans-serif;
       padding: 20px;
