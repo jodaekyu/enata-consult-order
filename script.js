@@ -435,14 +435,14 @@ window.saveNewCustomer = async function () {
   const bornTime = (minute === "모름") ? "모름" : `${hour}:${minute}`;
 
   try {
-    await setDoc(doc(db, "customers", phone), {
-      phone,
-      birth,
-      bornTime,
-      kakao,
-      gender,
-     createdAt: serverTimestamp()  // ✅ Firebase 서버 기준 시간
-});
+  await setDoc(doc(db, "customers", phone), {
+  phone,
+  birth,
+  bornTime,
+  kakao,
+  gender,
+  createdAt: serverTimestamp()  // ✅ Firebase 서버 기준 시간
+}); // ← 이 닫는 괄호와 세미콜론 필수!
     alert("고객 정보가 등록되었습니다.");
     closeNewCustomerPopup();
     // 이후 기존 입력창 자동 리프레시 연결 필요 시 콜백 추가
@@ -451,13 +451,6 @@ window.saveNewCustomer = async function () {
   }
 };
 
-
-window.openPaymentPopup = function (row, col) {
-  const cell = tableBody.rows[row].cells[col + 1]; // col+1은 첫 번째 칸이 번호이기 때문
-  if (!cell || cell.className === "") {
-    alert("일반/지명/예약으로 먼저 선택해주세요.");
-    return;
-  }
 
 window.openPaymentPopup = function (row, col) {
   const cell = tableBody.rows[row].cells[col + 1]; // col+1은 첫 번째 칸이 번호이기 때문
