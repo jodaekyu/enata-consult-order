@@ -128,7 +128,13 @@ if (docSnap.exists()) {
 
     // 로그아웃 버튼 보이기
     const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) logoutBtn.style.display = "inline-block";
+      if (logoutBtn) logoutBtn.style.display = "inline-block";
+
+      // ✅ 여기에 정확히 위치시켜야 정상 동작
+      createTable(60);
+      loadSchedule(currentDate);
+      loadTeacherAliases();
+    }
   }
 });
 
@@ -367,10 +373,6 @@ async function loadTeacherAliases() {
     });
   });
 }
-
-createTable(60);
-loadSchedule(currentDate);
-loadTeacherAliases();
 
 // ✅ [여기부터 관리자 함수 붙이기]
 window.viewAllRevenue = function () {
