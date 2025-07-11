@@ -120,11 +120,6 @@ if (docSnap.exists()) {
     if (revenueBtn) revenueBtn.textContent = "매출 보기";
   }
 
-  // ❌ 삭제 버튼 숨기기
-  const delBtn = document.querySelector("button[onclick='openUserDeletion()']");
-  if (delBtn) delBtn.style.display = "none";
-}
-
 
     // 로그아웃 버튼 보이기
     const logoutBtn = document.getElementById("logoutBtn");
