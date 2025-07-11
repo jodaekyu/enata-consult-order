@@ -483,5 +483,3 @@ window.openPaymentPopup = function (row, col) {
   // 팝업 보여주기
   document.getElementById("paymentPopup").style.display = "block";
 };
-
-
