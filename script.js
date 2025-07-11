@@ -459,7 +459,29 @@ window.openPaymentPopup = function (row, col) {
     return;
   }
 
-  // ✅ 이곳에 팝업창을 띄우는 로직을 넣으면 됩니다
-  alert(`💳 결제 팝업 열기: ${row + 1}행, ${col + 1}열 - 상태: ${cell.className}`);
+window.openPaymentPopup = function (row, col) {
+  const cell = tableBody.rows[row].cells[col + 1]; // col+1은 첫 번째 칸이 번호이기 때문
+  if (!cell || cell.className === "") {
+    alert("일반/지명/예약으로 먼저 선택해주세요.");
+    return;
+  }
+
+  // 현재 위치 저장
+  window.currentPaymentRow = row;
+  window.currentPaymentCol = col;
+
+  // 입력 초기화
+  document.getElementById("paymentPhone").value = "";
+  document.getElementById("cashInput").value = "";
+  document.getElementById("cardInput").value = "";
+  document.getElementById("transferInput").value = "";
+  document.getElementById("payInput").value = "";
+  document.getElementById("totalAmount").value = "";
+  document.getElementById("earnedPoint").value = "";
+  document.getElementById("pointInfo").innerHTML = "";
+
+  // 팝업 보여주기
+  document.getElementById("paymentPopup").style.display = "block";
 };
+
 
