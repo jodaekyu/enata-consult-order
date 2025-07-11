@@ -95,28 +95,36 @@ onAuthStateChanged(auth, async (user) => {
       userEmailDisplay.innerText = `${idOnly} (로그인성공)`;
     }
 
-    // 사용자 정보 가져오기
-    const docSnap = await getDoc(doc(db, "users", user.uid));
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      currentUserName = data.alias || "";
+  // 사용자 정보 가져오기
+const docSnap = await getDoc(doc(db, "users", user.uid));
+if (docSnap.exists()) {
+  const data = docSnap.data();
+  currentUserName = data.alias || "";
+  role = data.role || "admin";  // 기본값은 admin
 
- role = data.role || "admin";  // 기본값은 admin
+  // 유저명 표시
+  if (userEmailDisplay) {
+    const idOnly = user.email.split("@")[0];
+    userEmailDisplay.innerText = `${idOnly} (로그인성공)`;
+  }
 
-      // 👉 관리자 여부 확인
-      const isAdmin = data.role === "admin";
+  // 관리자 패널 표시
+  const adminPanel = document.getElementById("adminPanel");
+  const revenueBtn = document.getElementById("revenueBtn");
 
-      // (선택) 관리자 여부 UI에 표시
-      if (userEmailDisplay && isAdmin) {
-        userEmailDisplay.innerText += " - 관리자";
-      }
+  if (adminPanel) adminPanel.style.display = "block";
 
-      // 관리자 전용 UI 보이기
-      const adminPanel = document.getElementById("adminPanel");
-      if (isAdmin && adminPanel) {
-        adminPanel.style.display = "block";
-      }
-    }
+  if (role === "owner") {
+    if (revenueBtn) revenueBtn.textContent = "전체 매출 보기";
+  } else if (role === "admin") {
+    if (revenueBtn) revenueBtn.textContent = "매출 보기";
+  }
+
+  // ❌ 삭제 버튼 숨기기
+  const delBtn = document.querySelector("button[onclick='openUserDeletion()']");
+  if (delBtn) delBtn.style.display = "none";
+}
+
 
     // 로그아웃 버튼 보이기
     const logoutBtn = document.getElementById("logoutBtn");
@@ -366,20 +374,18 @@ loadTeacherAliases();
 
 // ✅ [여기부터 관리자 함수 붙이기]
 window.viewAllRevenue = function () {
-  alert("전체 매출 데이터를 불러옵니다 (예시)");
-};
-
-window.openUserDeletion = async function () {
-  const uidToDelete = prompt("삭제할 선생님 UID를 입력하세요");
-  if (uidToDelete) {
-    try {
-      await deleteDoc(doc(db, "users", uidToDelete));
-      alert("삭제 완료!");
-    } catch (e) {
-      alert("삭제 실패: " + e.message);
-    }
+  if (role === "owner") {
+    alert("🔎 전체 선생님의 매출을 조회합니다 (예시)");
+    // TODO: 전체 매출 출력 코드 삽입
+  } else if (role === "admin") {
+    alert(`🔍 ${currentUserName} 선생님의 매출을 조회합니다 (예시)`);
+    // TODO: 본인 매출만 출력하는 코드 삽입
+  } else {
+    alert("권한이 없습니다.");
   }
 };
+
+
 
 window.logout = function () {
   signOut(auth)
