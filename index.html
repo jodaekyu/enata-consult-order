@@ -162,5 +162,42 @@
   <button onclick="closeNewCustomerPopup()">닫기</button>
 </div>
 
+<!-- 💳 결제 입력 팝업 -->
+<div id="paymentPopup" class="popup" style="display: none;">
+  <div class="popup-content">
+    <h3>결제 입력</h3>
+    
+    <label>고객 연락처</label>
+    <input type="text" id="paymentPhone" placeholder="010-0000-0000">
+    <button onclick="checkCustomer()">확인</button>
+    <button onclick="openNewCustomerPopupFromPayment()">신규</button>
+    <div id="pointInfo" style="margin-top: 6px; font-size: 14px; color: #555;"></div>
+
+    <label>현금</label>
+    <input type="number" id="cashInput" placeholder="0원">
+
+    <label>카드</label>
+    <input type="number" id="cardInput" placeholder="0원">
+
+    <label>송금</label>
+    <input type="number" id="transferInput" placeholder="0원">
+
+    <label>페이</label>
+    <input type="number" id="payInput" placeholder="0원">
+
+    <label><strong>총 합계</strong></label>
+    <input type="text" id="totalAmount" readonly>
+
+    <label><strong>적립 포인트</strong></label>
+    <input type="text" id="earnedPoint" readonly>
+
+    <div style="margin-top: 12px; text-align: right;">
+      <button onclick="closePaymentPopup()">닫기</button>
+      <button onclick="savePayment()">저장</button>
+    </div>
+  </div>
+</div>
+
+
 </body>
 </html>
