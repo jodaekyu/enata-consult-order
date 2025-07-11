@@ -33,17 +33,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// ✅ 로그인 함수 추가
-window.login = function () {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  signInWithEmailAndPassword(auth, email, password)
-    .catch((error) => {
-      alert("로그인 실패: " + error.message);
-    });
-};
-
 const tableBody = document.getElementById("tableBody");
 const nameRow = document.getElementById("nameRow");
 const datePicker = document.getElementById("datePicker");
@@ -55,7 +44,74 @@ let role = "";
 document.getElementById("datePicker").valueAsDate = new Date();
 let currentDate = datePicker.value;
 
-// 🔐 회원가입 함수
+function createTable(rows = 60) {
+  tableBody.innerHTML = "";
+  for (let i = 0; i < rows; i++) {
+    const tr = document.createElement("tr");
+    const th = document.createElement("th");
+    th.textContent = i + 1;
+    tr.appendChild(th);
+    for (let j = 0; j < 4; j++) {
+      const td = document.createElement("td");
+      td.dataset.row = i;
+      td.dataset.col = j;
+      tr.appendChild(td);
+    }
+    tableBody.appendChild(tr);
+  }
+}
+
+async function loadSchedule(dateStr) {
+  const ref = doc(db, "schedules", dateStr);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) {
+    await setDoc(ref, { slots: [] });
+  }
+  onSnapshot(ref, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      console.log("불러온 데이터:", data);
+    }
+  });
+}
+
+async function loadTeacherAliases() {
+  const querySnapshot = await getDocs(collection(db, "users"));
+  const aliases = [];
+
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    if (data.alias && !data.hidden) {
+      aliases.push(data.alias);
+    }
+  });
+
+  document.querySelectorAll("select.name").forEach(select => {
+    select.innerHTML = '<option>이름</option>';
+    aliases.forEach(alias => {
+      const option = document.createElement("option");
+      option.textContent = alias;
+      option.value = alias;
+      if (role === "admin" && alias !== currentUserName) {
+        option.disabled = true;
+      }
+      select.appendChild(option);
+    });
+  });
+}
+
+// 로그인 함수
+window.login = function () {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  signInWithEmailAndPassword(auth, email, password)
+    .catch((error) => {
+      alert("로그인 실패: " + error.message);
+    });
+};
+
+// 회원가입 함수
 window.signup = function () {
   const email = document.getElementById("signupEmail").value;
   const password = document.getElementById("signupPassword").value;
@@ -106,13 +162,8 @@ onAuthStateChanged(auth, async (user) => {
         userEmailDisplay.innerText = `${idOnly} (로그인성공)`;
       }
 
-  createTable(60);
-  loadSchedule(currentDate);
-  loadTeacherAliases();
-
       const adminPanel = document.getElementById("adminPanel");
       const revenueBtn = document.getElementById("revenueBtn");
-
       if (adminPanel) adminPanel.style.display = "block";
 
       if (role === "owner") {
@@ -124,13 +175,17 @@ onAuthStateChanged(auth, async (user) => {
       const logoutBtn = document.getElementById("logoutBtn");
       if (logoutBtn) logoutBtn.style.display = "inline-block";
 
-     }
+      // ✅ 함수 정의 후 호출해야 오류 안 남
+      createTable(60);
+      loadSchedule(currentDate);
+      loadTeacherAliases();
+    }
   }
 });
 
 // 💳 결제 팝업 열기 함수
 window.openPaymentPopup = function (row, col) {
-  const cell = tableBody.rows[row].cells[col + 1]; // col+1은 첫 번째 칸이 번호이기 때문
+  const cell = tableBody.rows[row].cells[col + 1];
   if (!cell || cell.className === "") {
     alert("일반/지명/예약으로 먼저 선택해주세요.");
     return;
