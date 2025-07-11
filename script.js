@@ -14,7 +14,8 @@ import {
   setDoc,
   getDocs,
   collection,
-  onSnapshot
+  onSnapshot,
+  serverTimestamp  // ✅ 여기에 추가
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Firebase 설정값
@@ -169,12 +170,35 @@ function createTable(rows = 60) {
       const td = document.createElement("td");
       td.dataset.row = i;
       td.dataset.col = j;
+
+      // ✅ 1. 클릭해서 일반/지명/예약 상태 바꾸는 이벤트
       td.addEventListener("click", () => toggleType(td));
+
+      // ✅ 2. 꾹 누르면 결제 팝업 띄우는 이벤트
+      let pressTimer;
+      td.addEventListener("mousedown", () => {
+        pressTimer = setTimeout(() => {
+          openPaymentPopup(i, j); // i: 행, j: 열
+        }, 700); // 0.7초 이상 눌렀을 때 실행
+      });
+      td.addEventListener("mouseup", () => clearTimeout(pressTimer));
+      td.addEventListener("mouseleave", () => clearTimeout(pressTimer));
+
+      // ✅ 3. 모바일 터치 대응
+      td.addEventListener("touchstart", () => {
+        pressTimer = setTimeout(() => {
+          openPaymentPopup(i, j);
+        }, 700);
+      });
+      td.addEventListener("touchend", () => clearTimeout(pressTimer));
+      td.addEventListener("touchcancel", () => clearTimeout(pressTimer));
+
       tr.appendChild(td);
     }
     tableBody.appendChild(tr);
   }
 }
+
 
 function toggleType(cell) {
   const row = parseInt(cell.dataset.row);
@@ -417,8 +441,8 @@ window.saveNewCustomer = async function () {
       bornTime,
       kakao,
       gender,
-      createdAt: new Date()
-    });
+     createdAt: serverTimestamp()  // ✅ Firebase 서버 기준 시간
+});
     alert("고객 정보가 등록되었습니다.");
     closeNewCustomerPopup();
     // 이후 기존 입력창 자동 리프레시 연결 필요 시 콜백 추가
@@ -427,47 +451,15 @@ window.saveNewCustomer = async function () {
   }
 };
 
-// 신규 고객 등록 팝업 열기
-window.openNewCustomerPopup = function (phone) {
-  document.getElementById("newPhone").value = phone;
-  document.getElementById("newCustomerPopup").style.display = "block";
-};
 
-// 닫기
-window.closeNewCustomerPopup = function () {
-  document.getElementById("newCustomerPopup").style.display = "none";
-};
-
-// 저장
-window.saveNewCustomer = async function () {
-  const phone = document.getElementById("newPhone").value;
-  const birth = document.getElementById("newBirth").value;
-  const hour = document.getElementById("birthHour").value;
-  const minute = document.getElementById("birthMinute").value;
-  const kakao = document.getElementById("kakaoEmail").value;
-  const gender = document.getElementById("gender").value;
-
-  if (!phone || !birth || !gender) {
-    alert("연락처, 생년월일, 성별은 필수입니다.");
+window.openPaymentPopup = function (row, col) {
+  const cell = tableBody.rows[row].cells[col + 1]; // col+1은 첫 번째 칸이 번호이기 때문
+  if (!cell || cell.className === "") {
+    alert("일반/지명/예약으로 먼저 선택해주세요.");
     return;
   }
 
-  const bornTime = (minute === "모름") ? "모름" : `${hour}:${minute}`;
-
-  try {
-    await setDoc(doc(db, "customers", phone), {
-      phone,
-      birth,
-      bornTime,
-      kakao,
-      gender,
-      createdAt: new Date()
-    });
-    alert("고객 정보가 등록되었습니다.");
-    closeNewCustomerPopup();
-    // 이후 기존 입력창 자동 리프레시 연결 필요 시 콜백 추가
-  } catch (err) {
-    alert("저장 실패: " + err.message);
-  }
+  // ✅ 이곳에 팝업창을 띄우는 로직을 넣으면 됩니다
+  alert(`💳 결제 팝업 열기: ${row + 1}행, ${col + 1}열 - 상태: ${cell.className}`);
 };
 
