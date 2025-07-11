@@ -14,8 +14,7 @@ import {
   setDoc,
   getDocs,
   collection,
-  onSnapshot,
-  serverTimestamp
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Firebase 설정값
@@ -41,8 +40,19 @@ const activeTeachers = [false, false, false, false];
 let currentUserName = "";
 let role = "";
 
-document.getElementById("datePicker").valueAsDate = new Date();
-let currentDate = datePicker.value;
+// 오늘 날짜 형식 지정
+const today = new Date();
+const yyyy = today.getFullYear();
+const mm = String(today.getMonth() + 1).padStart(2, '0');
+const dd = String(today.getDate()).padStart(2, '0');
+const formattedToday = `${yyyy}-${mm}-${dd}`;
+datePicker.value = formattedToday;
+let currentDate = formattedToday;
+
+datePicker.addEventListener("change", () => {
+  currentDate = datePicker.value;
+  loadSchedule(currentDate);
+});
 
 function createTable(rows = 60) {
   tableBody.innerHTML = "";
@@ -61,6 +71,20 @@ function createTable(rows = 60) {
   }
 }
 
+function createTableFromData(data) {
+  const rows = data.slots?.length || 60;
+  createTable(rows);
+  const tableRows = tableBody.rows;
+  data.slots.forEach((rowData, rowIndex) => {
+    rowData.forEach((value, colIndex) => {
+      const cell = tableRows[rowIndex]?.cells[colIndex + 1];
+      if (cell) {
+        cell.textContent = value;
+      }
+    });
+  });
+}
+
 async function loadSchedule(dateStr) {
   const ref = doc(db, "schedules", dateStr);
   const snap = await getDoc(ref);
@@ -71,6 +95,9 @@ async function loadSchedule(dateStr) {
     if (docSnap.exists()) {
       const data = docSnap.data();
       console.log("불러온 데이터:", data);
+      createTableFromData(data);
+    } else {
+      createTable(60);
     }
   });
 }
@@ -157,15 +184,9 @@ onAuthStateChanged(auth, async (user) => {
       currentUserName = data.alias || "";
       role = data.role || "admin";
 
-      if (userEmailDisplay) {
-        const idOnly = user.email.split("@")[0];
-        userEmailDisplay.innerText = `${idOnly} (로그인성공)`;
-      }
-
       const adminPanel = document.getElementById("adminPanel");
       const revenueBtn = document.getElementById("revenueBtn");
       if (adminPanel) adminPanel.style.display = "block";
-
       if (role === "owner") {
         if (revenueBtn) revenueBtn.textContent = "전체 매출 보기";
       } else if (role === "admin") {
@@ -175,7 +196,6 @@ onAuthStateChanged(auth, async (user) => {
       const logoutBtn = document.getElementById("logoutBtn");
       if (logoutBtn) logoutBtn.style.display = "inline-block";
 
-      // ✅ 함수 정의 후 호출해야 오류 안 남
       createTable(60);
       loadSchedule(currentDate);
       loadTeacherAliases();
