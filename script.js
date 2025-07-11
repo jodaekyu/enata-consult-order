@@ -106,6 +106,10 @@ onAuthStateChanged(auth, async (user) => {
         userEmailDisplay.innerText = `${idOnly} (로그인성공)`;
       }
 
+  createTable(60);
+  loadSchedule(currentDate);
+  loadTeacherAliases();
+
       const adminPanel = document.getElementById("adminPanel");
       const revenueBtn = document.getElementById("revenueBtn");
 
@@ -120,10 +124,7 @@ onAuthStateChanged(auth, async (user) => {
       const logoutBtn = document.getElementById("logoutBtn");
       if (logoutBtn) logoutBtn.style.display = "inline-block";
 
-      createTable(60);
-      loadSchedule(currentDate);
-      loadTeacherAliases();
-    }
+     }
   }
 });
 
