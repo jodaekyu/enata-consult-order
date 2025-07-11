@@ -72,10 +72,18 @@ function createTable(rows = 60) {
 }
 
 function createTableFromData(data) {
-  const rows = data.slots?.length || 60;
+  let rawSlots = data.slots;
+
+  // 객체 형식이면 배열로 변환
+  if (!Array.isArray(rawSlots)) {
+    rawSlots = Object.values(rawSlots).map(row => Object.values(row));
+  }
+
+  const rows = rawSlots.length || 60;
   createTable(rows);
   const tableRows = tableBody.rows;
-  data.slots.forEach((rowData, rowIndex) => {
+
+  rawSlots.forEach((rowData, rowIndex) => {
     rowData.forEach((value, colIndex) => {
       const cell = tableRows[rowIndex]?.cells[colIndex + 1];
       if (cell) {
@@ -203,7 +211,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// 💳 결제 팝업 열기 함수
+// 통일 결제 팝업 열기 함수
 window.openPaymentPopup = function (row, col) {
   const cell = tableBody.rows[row].cells[col + 1];
   if (!cell || cell.className === "") {
