@@ -383,14 +383,91 @@ window.viewAllRevenue = function () {
 };
 
 
+// 신규 고객 등록 팝업 열기
+window.openNewCustomerPopup = function (phone) {
+  document.getElementById("newPhone").value = phone;
+  document.getElementById("newCustomerPopup").style.display = "block";
+};
 
-window.logout = function () {
-  signOut(auth)
-    .then(() => {
-      location.reload();  // 새로고침으로 초기화
-    })
-    .catch((error) => {
-      alert("로그아웃 실패: " + error.message);
+// 닫기
+window.closeNewCustomerPopup = function () {
+  document.getElementById("newCustomerPopup").style.display = "none";
+};
+
+// 저장
+window.saveNewCustomer = async function () {
+  const phone = document.getElementById("newPhone").value;
+  const birth = document.getElementById("newBirth").value;
+  const hour = document.getElementById("birthHour").value;
+  const minute = document.getElementById("birthMinute").value;
+  const kakao = document.getElementById("kakaoEmail").value;
+  const gender = document.getElementById("gender").value;
+
+  if (!phone || !birth || !gender) {
+    alert("연락처, 생년월일, 성별은 필수입니다.");
+    return;
+  }
+
+  const bornTime = (minute === "모름") ? "모름" : `${hour}:${minute}`;
+
+  try {
+    await setDoc(doc(db, "customers", phone), {
+      phone,
+      birth,
+      bornTime,
+      kakao,
+      gender,
+      createdAt: new Date()
     });
+    alert("고객 정보가 등록되었습니다.");
+    closeNewCustomerPopup();
+    // 이후 기존 입력창 자동 리프레시 연결 필요 시 콜백 추가
+  } catch (err) {
+    alert("저장 실패: " + err.message);
+  }
+};
+
+// 신규 고객 등록 팝업 열기
+window.openNewCustomerPopup = function (phone) {
+  document.getElementById("newPhone").value = phone;
+  document.getElementById("newCustomerPopup").style.display = "block";
+};
+
+// 닫기
+window.closeNewCustomerPopup = function () {
+  document.getElementById("newCustomerPopup").style.display = "none";
+};
+
+// 저장
+window.saveNewCustomer = async function () {
+  const phone = document.getElementById("newPhone").value;
+  const birth = document.getElementById("newBirth").value;
+  const hour = document.getElementById("birthHour").value;
+  const minute = document.getElementById("birthMinute").value;
+  const kakao = document.getElementById("kakaoEmail").value;
+  const gender = document.getElementById("gender").value;
+
+  if (!phone || !birth || !gender) {
+    alert("연락처, 생년월일, 성별은 필수입니다.");
+    return;
+  }
+
+  const bornTime = (minute === "모름") ? "모름" : `${hour}:${minute}`;
+
+  try {
+    await setDoc(doc(db, "customers", phone), {
+      phone,
+      birth,
+      bornTime,
+      kakao,
+      gender,
+      createdAt: new Date()
+    });
+    alert("고객 정보가 등록되었습니다.");
+    closeNewCustomerPopup();
+    // 이후 기존 입력창 자동 리프레시 연결 필요 시 콜백 추가
+  } catch (err) {
+    alert("저장 실패: " + err.message);
+  }
 };
 
