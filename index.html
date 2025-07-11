@@ -132,5 +132,35 @@
 
   <!-- ✅ 외부 스크립트 연결만 유지 -->
   <script type="module" src="script.js"></script>
+
+<!-- 신규 고객 등록 팝업 -->
+<div id="newCustomerPopup" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); width:90%; max-width:400px; background:#fff; padding:20px; border:1px solid #ccc; box-shadow:0 4px 12px rgba(0,0,0,0.2); z-index:9999;">
+  <h3>신규 고객 등록</h3>
+  <label>연락처: <input type="tel" id="newPhone" readonly /></label><br/><br/>
+  <label>생년월일: <input type="date" id="newBirth" /></label><br/><br/>
+  <label>출생 시간: 
+    <select id="birthHour">
+      <option value="">시</option>
+      ${[...Array(24).keys()].map(h => `<option value="${String(h).padStart(2, '0')}">${String(h).padStart(2, '0')}시</option>`).join('')}
+    </select>
+    :
+    <select id="birthMinute">
+      <option value="">분</option>
+      <option value="모름">모름</option>
+      ${[...Array(60).keys()].map(m => `<option value="${String(m).padStart(2, '0')}">${String(m).padStart(2, '0')}분</option>`).join('')}
+    </select>
+  </label><br/><br/>
+  <label>카카오 이메일: <input type="email" id="kakaoEmail" /></label><br/><br/>
+  <label>성별: 
+    <select id="gender">
+      <option value="">선택</option>
+      <option value="남">남</option>
+      <option value="여">여</option>
+    </select>
+  </label><br/><br/>
+  <button onclick="saveNewCustomer()">고객 등록</button>
+  <button onclick="closeNewCustomerPopup()">닫기</button>
+</div>
+
 </body>
 </html>
