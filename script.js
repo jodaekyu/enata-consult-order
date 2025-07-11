@@ -452,13 +452,6 @@ window.saveNewCustomer = async function () {
 };
 
 
-window.openPaymentPopup = function (row, col) {
-  const cell = tableBody.rows[row].cells[col + 1]; // col+1은 첫 번째 칸이 번호이기 때문
-  if (!cell || cell.className === "") {
-    alert("일반/지명/예약으로 먼저 선택해주세요.");
-    return;
-  }
-
   // 현재 위치 저장
   window.currentPaymentRow = row;
   window.currentPaymentCol = col;
