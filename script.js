@@ -599,36 +599,39 @@ window.checkCustomer = async function () {
       signupBtn.textContent = "신규";
       signupBtn.style.display = "inline-block";
 
-      // 신규 버튼 기능 연결
-      signupBtn.onclick = async () => {
-        const year = document.getElementById("birthYear").value;
-const month = document.getElementById("birthMonth").value.padStart(2, '0');
-const day = document.getElementById("birthDay").value.padStart(2, '0');
-const birth = `${year}-${month}-${day}`;
-        const hour = document.getElementById("birthHour2").value;
-        const minute = document.getElementById("birthMinute2").value;
-const bornTime = (hour === "모름" || minute === "모름") ? "모름" : `${hour}:${minute}`;
-        const gender = document.getElementById("gender2").value;
+// 신규 버튼 기능 연결
+signupBtn.onclick = async () => {
+  const year = document.getElementById("birthYear").value;
+  const month = document.getElementById("birthMonth").value.padStart(2, '0');
+  const day = document.getElementById("birthDay").value.padStart(2, '0');
+  const birth = `${year}-${month}-${day}`;
 
-        if (!birth || !gender) {
-          alert("생년월일과 성별은 필수입니다.");
-          return;
-        }
+  const hour = document.getElementById("birthHour2").value;
+  const minute = document.getElementById("birthMinute2").value;
 
-        const bornTime = (minute === "모름") ? "모름" : `${hour}:${minute}`;
+  // 🔧 여기만 1번 선언
+  const bornTime = (hour === "모름" || minute === "모름") ? "모름" : `${hour}:${minute}`;
 
-        await setDoc(ref, {
-          phone,
-          birth,
-          bornTime,
-          gender,
-          point: 0,
-          createdAt: serverTimestamp()
-        });
+  const gender = document.getElementById("gender2").value;
 
-        pointInfo.innerHTML = `<strong>[현재 포인트 0]</strong>`;
-        signupBtn.style.display = "none";
-      };
+  if (!birth || !gender) {
+    alert("생년월일과 성별은 필수입니다.");
+    return;
+  }
+
+  await setDoc(ref, {
+    phone,
+    birth,
+    bornTime,
+    gender,
+    point: 0,
+    createdAt: serverTimestamp()
+  });
+
+  pointInfo.innerHTML = `<strong>[현재 포인트 0]</strong>`;
+  signupBtn.style.display = "none";
+};
+
     }
   } catch (err) {
     alert("고객 조회 오류: " + err.message);
