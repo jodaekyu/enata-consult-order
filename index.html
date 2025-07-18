@@ -198,13 +198,13 @@
 <!-- ✅ 수정된 결제 팝업 HTML -->
 <div id="paymentPopup" class="popup" style="display: none;">
   <div class="popup-content">
-    <h3>💳 [예약] 결제 입력</h3>
+    <h3>💳 결제창</h3>
 
     <div style="display: flex; align-items: center; gap: 8px;">
       <label style="flex: 1;">고객 연락처
-        <input type="text" id="paymentPhone" placeholder="010-0000-0000">
+        <input type="text" id="paymentPhone" placeholder="010-0000-0000" style="height: 36px;">
       </label>
-      <button onclick="checkCustomer()" id="checkBtn">확인</button>
+      <button onclick="checkCustomer()" id="checkBtn" style="height: 36px;">확인</button>
       <span id="customerLevel" style="font-size: 14px; color: gray; display: none;">[고객 등급]</span>
     </div>
 
@@ -237,29 +237,30 @@
       </div>
     </div>
 
+    <!-- 금액 입력 영역 -->
     <div style="display: flex; align-items: center; gap: 8px;">
       <span style="width: 70px;">현금</span>
-      <input type="number" id="cashInput" placeholder="0원" style="flex: 1;">
+      <input type="number" id="cashInput" placeholder="0원" style="flex: 1; height: 32px;">
     </div>
     <div style="display: flex; align-items: center; gap: 8px;">
       <span style="width: 70px;">카드</span>
-      <input type="number" id="cardInput" placeholder="0원" style="flex: 1;">
+      <input type="number" id="cardInput" placeholder="0원" style="flex: 1; height: 32px;">
     </div>
     <div style="display: flex; align-items: center; gap: 8px;">
       <span style="width: 70px;">송금</span>
-      <input type="number" id="transferInput" placeholder="0원" style="flex: 1;">
+      <input type="number" id="transferInput" placeholder="0원" style="flex: 1; height: 32px;">
     </div>
     <div style="display: flex; align-items: center; gap: 8px;">
       <span style="width: 70px;">페이</span>
-      <input type="number" id="payInput" placeholder="0원" style="flex: 1;">
+      <input type="number" id="payInput" placeholder="0원" style="flex: 1; height: 32px;">
     </div>
     <div style="display: flex; align-items: center; gap: 8px;">
       <span style="width: 70px;">합계</span>
-      <input type="text" id="totalAmount" readonly style="flex: 1;">
+      <input type="text" id="totalAmount" readonly style="flex: 1; height: 32px;">
     </div>
     <div style="display: flex; align-items: center; gap: 8px;">
       <span style="width: 70px;">포인트</span>
-      <input type="text" id="earnedPoint" readonly style="flex: 1;">
+      <input type="text" id="earnedPoint" readonly style="flex: 1; height: 32px;">
       <span id="currentPointText" style="font-size: 13px; color: gray;"></span>
     </div>
 
