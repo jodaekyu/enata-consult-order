@@ -44,6 +44,11 @@ window.login = function () {
     });
 };
 
+// ✅ 로그인 버튼 이벤트 연결 (모듈 환경 대응용)
+document.getElementById("loginBtn").addEventListener("click", () => {
+  login(); // 위에 선언한 login() 호출
+});
+
 const tableBody = document.getElementById("tableBody");
 const nameRow = document.getElementById("nameRow");
 const datePicker = document.getElementById("datePicker");
