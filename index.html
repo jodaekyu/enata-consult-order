@@ -195,34 +195,85 @@
   <button onclick="closeNewCustomerPopup()">닫기</button>
 </div>
 
-<!-- 💳 결제 입력 팝업 -->
+<!-- ✅ 결제 팝업 HTML 수정 버전 -->
 <div id="paymentPopup" class="popup" style="display: none;">
   <div class="popup-content">
-    <h3>결제 입력</h3>
-    
-    <label>고객 연락처</label>
-    <input type="text" id="paymentPhone" placeholder="010-0000-0000">
-    <button onclick="checkCustomer()">확인</button>
-    <button onclick="openNewCustomerPopupFromPayment()" style="display: none;">신규</button>
+    <h3>💳 [예약] 결제 입력</h3>
+
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <label style="flex: 1;">고객 연락처
+        <input type="text" id="paymentPhone" placeholder="010-0000-0000">
+      </label>
+      <span id="customerLevel" style="font-size: 14px; color: gray;">[고객 등급]</span>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+      <button onclick="checkCustomer()" id="checkBtn">확인</button>
+      <button onclick="openNewCustomerPopupFromPayment()" id="signupBtn" style="display: none;">신규</button>
+    </div>
+
     <div id="pointInfo" style="margin-top: 6px; font-size: 14px; color: #555;"></div>
 
+    <label>생년월일:</label>
+    <div style="display: flex; gap: 6px;">
+      <select id="birthYear" style="flex: 1;"></select>
+      <select id="birthMonth" style="flex: 1;"></select>
+      <select id="birthDay" style="flex: 1;"></select>
+    </div>
+
+    <label style="margin-top: 8px;">출생 정보:</label>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <select id="birthHour2" style="width: 90px;">
+        <option value="모름">모름</option>
+        <!-- 시간 옵션 -->
+      </select>
+      <select id="birthMinute2" style="width: 90px;">
+        <option value="모름">모름</option>
+        <!-- 분 옵션 -->
+      </select>
+      <select id="gender2" style="flex: 1;">
+        <option value="">성별 선택</option>
+        <option value="남">남</option>
+        <option value="여">여</option>
+      </select>
+    </div>
+
     <label>현금</label>
-    <input type="number" id="cashInput" placeholder="0원">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="width: 70px;">현금</span>
+      <input type="number" id="cashInput" placeholder="0원" style="flex: 1;">
+    </div>
 
     <label>카드</label>
-    <input type="number" id="cardInput" placeholder="0원">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="width: 70px;">카드</span>
+      <input type="number" id="cardInput" placeholder="0원" style="flex: 1;">
+    </div>
 
     <label>송금</label>
-    <input type="number" id="transferInput" placeholder="0원">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="width: 70px;">송금</span>
+      <input type="number" id="transferInput" placeholder="0원" style="flex: 1;">
+    </div>
 
     <label>페이</label>
-    <input type="number" id="payInput" placeholder="0원">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="width: 70px;">페이</span>
+      <input type="number" id="payInput" placeholder="0원" style="flex: 1;">
+    </div>
 
-    <label><strong>총 합계</strong></label>
-    <input type="text" id="totalAmount" readonly>
+    <label>총 합계</label>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="width: 70px;">합계</span>
+      <input type="text" id="totalAmount" readonly style="flex: 1;">
+    </div>
 
-    <label><strong>적립 포인트</strong></label>
-    <input type="text" id="earnedPoint" readonly>
+    <label>적립 포인트</label>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="width: 70px;">포인트</span>
+      <input type="text" id="earnedPoint" readonly style="flex: 1;">
+      <span id="currentPointText" style="font-size: 13px; color: gray;"></span>
+    </div>
 
     <div style="margin-top: 12px; text-align: right;">
       <button onclick="closePaymentPopup()">닫기</button>
@@ -230,6 +281,7 @@
     </div>
   </div>
 </div>
+
 
 
 </body>
