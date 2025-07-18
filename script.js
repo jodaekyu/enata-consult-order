@@ -629,11 +629,21 @@ if (pointText) {
     </select>
   </label><br/><br/>
 `;
-      signupBtn.textContent = "신규";
-      signupBtn.style.display = "inline-block";
+signupBtn.textContent = "신규";
+signupBtn.style.display = "inline-block";
+
 document.getElementById("birthInfoSection").style.display = "block";
-document.getElementById("customerLevel").style.display = "none";
-document.getElementById("currentPointText").innerText = "";
+
+const levelEl = document.getElementById("customerLevel");
+if (levelEl) {
+  levelEl.style.display = "none";
+}
+
+const pointText = document.getElementById("currentPointText");
+if (pointText) {
+  pointText.innerText = "";
+}
+
 
 
 // 신규 버튼 기능 연결
@@ -665,7 +675,11 @@ signupBtn.onclick = async () => {
     createdAt: serverTimestamp()
   });
 
-  pointInfo.innerHTML = `<strong>[현재 포인트 0]</strong>`;
+ const pointInfo = document.getElementById("pointInfo");
+if (pointInfo) {
+  pointInfo.innerHTML = `<strong>[현재 포인트 ${point.toLocaleString()}]</strong>`;
+}
+
   signupBtn.style.display = "none";
 };
 
