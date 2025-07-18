@@ -580,15 +580,21 @@ window.checkCustomer = async function () {
 
 
 // ✅ 포인트 텍스트 영역에 출력
-  const pointText = document.getElementById("currentPointText");
+const pointText = document.getElementById("currentPointText");
 if (pointText) {
   pointText.innerText = `[현재 포인트 ${point.toLocaleString()}]`;
 }
 
-  // ✅ 고객 등급 표시 (등급 로직은 추후 반영)
   const levelEl = document.getElementById("customerLevel");
-  levelEl.style.display = "inline";
-  levelEl.innerText = "[고객 등급]"; // 또는 "[VIP]", "[일반]" 등 추후 설정
+if (levelEl) {
+  if (snap.exists()) {
+    levelEl.style.display = "inline";
+    levelEl.innerText = "[고객 등급]";
+  } else {
+    levelEl.style.display = "none";
+  }
+}
+
 
     
     } else {
@@ -634,10 +640,6 @@ signupBtn.style.display = "inline-block";
 
 document.getElementById("birthInfoSection").style.display = "block";
 
-const levelEl = document.getElementById("customerLevel");
-if (levelEl) {
-  levelEl.style.display = "none";
-}
 
 const pointText = document.getElementById("currentPointText");
 if (pointText) {
