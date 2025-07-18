@@ -223,10 +223,10 @@ function toggleType(cell) {
   const selectedName = nameRow.querySelectorAll("select.name")[col].value;
 
   // ✅ 대표(owner)는 전체 열 편집 가능, admin은 자기 열만
-  if (role !== "owner" && (!activeTeachers[col] || currentUserName !== selectedName)) {
-    alert("본인 이름의 칸만 선택할 수 있어요.");
-    return;
-  }
+ if (role !== "owner" && (!activeTeachers[col] || currentUserName !== selectedName)) {
+  return;  // ❌ 팝업 없이 조용히 무시
+}
+
 
   // ✅ 해당 줄에 다른 사람이 입력해둔 셀이 있으면 클릭 무시
   for (let i = 0; i < 4; i++) {
