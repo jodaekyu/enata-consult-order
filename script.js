@@ -418,6 +418,64 @@ window.closeNewCustomerPopup = function () {
   document.getElementById("newCustomerPopup").style.display = "none";
 };
 
+// ✅ 결제 팝업 닫기 함수
+window.closePaymentPopup = function () {
+  document.getElementById("paymentPopup").style.display = "none";
+
+
+  // 입력 초기화 (선택사항)
+  ["cashInput", "cardInput", "transferInput", "payInput", "totalAmount", "earnedPoint", "paymentPhone"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+
+  document.getElementById("pointInfo").innerHTML = "";
+  document.querySelector('#paymentPopup button[onclick="checkCustomer()"]').style.display = "inline-block";
+  document.querySelector('#paymentPopup button[onclick="openNewCustomerPopupFromPayment()"]').style.display = "none";
+};
+
+
+// ✅ 결제 저장 함수
+window.savePayment = async function () {
+  const phone = document.getElementById("paymentPhone").value.trim();
+  const total = ["cashInput", "cardInput", "transferInput", "payInput"].reduce((sum, id) => {
+    return sum + parseInt(document.getElementById(id).value || "0", 10);
+  }, 0);
+  const point = Math.floor(total * 0.05);
+
+  if (!phone || total === 0) {
+    alert("고객 연락처와 결제 금액을 입력해주세요.");
+    return;
+  }
+
+  try {
+    // 결제 정보 저장
+    await setDoc(doc(db, "payments", `${Date.now()}_${phone}`), {
+      phone,
+      date: new Date().toISOString(),
+      cash: parseInt(document.getElementById("cashInput").value || "0"),
+      card: parseInt(document.getElementById("cardInput").value || "0"),
+      transfer: parseInt(document.getElementById("transferInput").value || "0"),
+      pay: parseInt(document.getElementById("payInput").value || "0"),
+      total,
+      point
+    });
+
+    // 포인트 누적
+    const ref = doc(db, "customers", phone);
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      const prev = snap.data().point || 0;
+      await setDoc(ref, { point: prev + point }, { merge: true });
+    }
+
+    alert("결제가 저장되었습니다.");
+    closePaymentPopup();
+  } catch (err) {
+    alert("저장 실패: " + err.message);
+  }
+};
+
 // 저장
 window.saveNewCustomer = async function () {
   const phone = document.getElementById("newPhone").value;
