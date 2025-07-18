@@ -267,31 +267,32 @@
     </div>
 
     <!-- 금액 입력 영역 -->
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <span style="width: 70px;">현금</span>
-      <input type="number" id="cashInput" placeholder="0원" style="width: 90%; height: 32px;">
-    </div>
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <span style="width: 70px;">카드</span>
-      <input type="number" id="cardInput" placeholder="0원" style="width: 90%; height: 32px;">
-    </div>
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <span style="width: 70px;">송금</span>
-      <input type="number" id="transferInput" placeholder="0원" style="width: 90%; height: 32px;">
-    </div>
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <span style="width: 70px;">페이</span>
-      <input type="number" id="payInput" placeholder="0원" style="width: 90%; height: 32px;">
-    </div>
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <span style="width: 70px;">합계</span>
-      <input type="text" id="totalAmount" readonly style="width: 90%; height: 32px;">
-    </div>
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <span style="width: 70px;">포인트</span>
-      <input type="text" id="earnedPoint" readonly style="width: 90%; height: 32px;">
-      <span id="currentPointText" style="font-size: 13px; color: gray;"></span>
-    </div>
+<div style="display: flex; align-items: center; gap: 12px;">
+  <label for="cashInput" style="width: 60px;">현금</label>
+  <input type="number" id="cashInput" placeholder="0원" style="flex: 1; height: 32px;">
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+  <label for="cardInput" style="width: 60px;">카드</label>
+  <input type="number" id="cardInput" placeholder="0원" style="flex: 1; height: 32px;">
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+  <label for="transferInput" style="width: 60px;">송금</label>
+  <input type="number" id="transferInput" placeholder="0원" style="flex: 1; height: 32px;">
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+  <label for="payInput" style="width: 60px;">페이</label>
+  <input type="number" id="payInput" placeholder="0원" style="flex: 1; height: 32px;">
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+  <label for="totalAmount" style="width: 60px;">합계</label>
+  <input type="text" id="totalAmount" readonly style="flex: 1; height: 32px;">
+</div>
+<div style="display: flex; align-items: center; gap: 12px;">
+  <label for="earnedPoint" style="width: 60px;">포인트</label>
+  <input type="text" id="earnedPoint" readonly style="flex: 1; height: 32px;">
+  <span id="currentPointText" style="font-size: 13px; color: gray; margin-left: 6px;"></span>
+</div>
+
 
     <div style="margin-top: 12px; text-align: right;">
       <button onclick="closePaymentPopup()">닫기</button>
