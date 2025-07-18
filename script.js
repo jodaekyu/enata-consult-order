@@ -477,3 +477,130 @@ window.openPaymentPopup = function (row, col) {
 
   document.getElementById("paymentPopup").querySelector("h3").textContent = `💳 [${typeText}] 결제 입력`;
 };
+
+// 확인 버튼 클릭 시
+window.checkCustomer = async function () {
+  const phone = document.getElementById("paymentPhone").value.trim();
+  const pointInfo = document.getElementById("pointInfo");
+  const confirmBtn = document.querySelector('#paymentPopup button[onclick="checkCustomer()"]');
+  const signupBtn = document.querySelector('#paymentPopup button[onclick="openNewCustomerPopupFromPayment()"]');
+
+  if (!phone) {
+    alert("전화번호를 입력해주세요.");
+    return;
+  }
+
+  try {
+    const ref = doc(db, "customers", phone);
+    const snap = await getDoc(ref);
+
+    confirmBtn.style.display = "none"; // 확인 버튼 숨김
+
+    if (snap.exists()) {
+      const data = snap.data();
+      const point = data.point || 0;
+      pointInfo.innerHTML = `<strong>[현재 포인트 ${point.toLocaleString()}]</strong>`;
+    } else {
+      pointInfo.innerHTML = `
+        <label>생년월일: <input type="date" id="newBirth2"></label><br/><br/>
+        <label>출생 시간: 
+          <select id="birthHour2">${[...Array(24).keys()].map(h => `<option value="${h}">${String(h).padStart(2, '0')}시</option>`).join('')}</select> :
+          <select id="birthMinute2">
+            <option value="모름">모름</option>
+            ${[...Array(60).keys()].map(m => `<option value="${m}">${String(m).padStart(2, '0')}분</option>`).join('')}
+          </select>
+        </label><br/><br/>
+        <label>성별: 
+          <select id="gender2">
+            <option value="">선택</option>
+            <option value="남">남</option>
+            <option value="여">여</option>
+          </select>
+        </label><br/><br/>
+      `;
+      signupBtn.textContent = "신규";
+      signupBtn.style.display = "inline-block";
+
+      // 신규 버튼 기능 연결
+      signupBtn.onclick = async () => {
+        const birth = document.getElementById("newBirth2").value;
+        const hour = document.getElementById("birthHour2").value;
+        const minute = document.getElementById("birthMinute2").value;
+        const gender = document.getElementById("gender2").value;
+
+        if (!birth || !gender) {
+          alert("생년월일과 성별은 필수입니다.");
+          return;
+        }
+
+        const bornTime = (minute === "모름") ? "모름" : `${hour}:${minute}`;
+
+        await setDoc(ref, {
+          phone,
+          birth,
+          bornTime,
+          gender,
+          point: 0,
+          createdAt: serverTimestamp()
+        });
+
+        pointInfo.innerHTML = `<strong>[현재 포인트 0]</strong>`;
+        signupBtn.style.display = "none";
+      };
+    }
+  } catch (err) {
+    alert("고객 조회 오류: " + err.message);
+  }
+};
+
+// 합계 및 포인트 계산
+["cashInput", "cardInput", "transferInput", "payInput"].forEach(id => {
+  document.getElementById(id).addEventListener("input", calculateTotalAndPoint);
+});
+
+function calculateTotalAndPoint() {
+  const getNum = id => parseInt(document.getElementById(id).value || "0", 10);
+  const total = getNum("cashInput") + getNum("cardInput") + getNum("transferInput") + getNum("payInput");
+  document.getElementById("totalAmount").value = total.toLocaleString();
+  document.getElementById("earnedPoint").value = Math.floor(total * 0.05).toLocaleString(); // 5% 적립
+}
+
+// 결제 저장
+window.savePayment = async function () {
+  const phone = document.getElementById("paymentPhone").value.trim();
+  if (!phone) {
+    alert("고객 연락처를 입력해주세요.");
+    return;
+  }
+
+  const getNum = id => parseInt(document.getElementById(id).value || "0", 10);
+  const total = getNum("cashInput") + getNum("cardInput") + getNum("transferInput") + getNum("payInput");
+  const point = Math.floor(total * 0.05);
+
+  try {
+    // 저장
+    await setDoc(doc(db, "payments", `${Date.now()}_${phone}`), {
+      phone,
+      date: new Date().toISOString(),
+      cash: getNum("cashInput"),
+      card: getNum("cardInput"),
+      transfer: getNum("transferInput"),
+      pay: getNum("payInput"),
+      total,
+      point
+    });
+
+    // 포인트 누적
+    const customerRef = doc(db, "customers", phone);
+    const snap = await getDoc(customerRef);
+    if (snap.exists()) {
+      const prev = snap.data().point || 0;
+      await setDoc(customerRef, { point: prev + point }, { merge: true });
+    }
+
+    alert("결제가 저장되었습니다.");
+    closePaymentPopup();
+  } catch (err) {
+    alert("저장 실패: " + err.message);
+  }
+};
