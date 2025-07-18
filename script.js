@@ -176,18 +176,28 @@ function createTable(rows = 60) {
       td.dataset.row = i;
       td.dataset.col = j;
 
-      // ✅ 1. 클릭해서 일반/지명/예약 상태 바꾸는 이벤트
-      td.addEventListener("click", () => toggleType(td));
+     let pressTimer;
+let longPress = false;
 
-      // ✅ 2. 꾹 누르면 결제 팝업 띄우는 이벤트
-      let pressTimer;
-      td.addEventListener("mousedown", () => {
-        pressTimer = setTimeout(() => {
-          openPaymentPopup(i, j); // i: 행, j: 열
-        }, 700); // 0.7초 이상 눌렀을 때 실행
-      });
-      td.addEventListener("mouseup", () => clearTimeout(pressTimer));
-      td.addEventListener("mouseleave", () => clearTimeout(pressTimer));
+// ✅ 1. 꾹 누르면 팝업 띄우기 (0.7초 이상)
+td.addEventListener("mousedown", () => {
+  longPress = false;
+  pressTimer = setTimeout(() => {
+    longPress = true;
+    openPaymentPopup(i, j); // 팝업 띄우기
+  }, 700);
+});
+
+// ✅ 2. 짧게 클릭한 경우에만 상태 변경
+td.addEventListener("mouseup", () => {
+  clearTimeout(pressTimer);
+  if (!longPress) {
+    toggleType(td); // 일반 → 지명 → 예약 변경
+  }
+});
+
+td.addEventListener("mouseleave", () => clearTimeout(pressTimer));
+
 
       // ✅ 3. 모바일 터치 대응
       td.addEventListener("touchstart", () => {
