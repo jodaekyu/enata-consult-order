@@ -110,6 +110,32 @@
       .header-cell { min-width: 60px; }
       .score { font-size: 12px; }
     }
+
+@media (max-width: 480px) {
+  .popup-content input,
+  .popup-content select {
+    font-size: 14px;
+  }
+
+  #paymentPopup h3 {
+    font-size: 16px;
+  }
+
+  #paymentPopup button {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+
+  #paymentPopup div {
+    flex-wrap: wrap;
+  }
+
+  #paymentPopup .popup-content > div {
+    width: 100%;
+  }
+}
+
+
   </style>
 </head>
 <body>
@@ -201,7 +227,7 @@
     <h3>💳 결제창</h3>
 
   <!-- 고객 연락처 입력 + 확인 버튼 -->
-<div style="display: flex; align-items: flex-end; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 8px;">
   <div style="flex: 1;">
     <label for="paymentPhone" style="font-size: 14px;">고객 연락처</label>
     <input type="text" id="paymentPhone" placeholder="010-0000-0000" style="height: 36px; width: 100%; margin-top: 4px;">
