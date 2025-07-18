@@ -569,7 +569,10 @@ window.checkCustomer = async function () {
 
 
 // ✅ 포인트 텍스트 영역에 출력
-  document.getElementById("currentPointText").innerText = `[현재 포인트 ${point.toLocaleString()}]`;
+  const pointText = document.getElementById("currentPointText");
+if (pointText) {
+  pointText.innerText = `[현재 포인트 ${point.toLocaleString()}]`;
+}
 
   // ✅ 고객 등급 표시 (등급 로직은 추후 반영)
   const levelEl = document.getElementById("customerLevel");
