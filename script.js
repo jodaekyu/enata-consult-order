@@ -562,6 +562,11 @@ window.checkCustomer = async function () {
     if (snap.exists()) {
       const data = snap.data();
       const point = data.point || 0;
+document.getElementById("customerLevel").style.display = "inline";
+document.getElementById("customerLevel").innerText = "[고객 등급]";
+document.getElementById("currentPointText").innerText = `[현재 포인트 ${point.toLocaleString()}]`;
+document.getElementById("birthInfoSection").style.display = "none";
+
 
 // ✅ 포인트 텍스트 영역에 출력
   document.getElementById("currentPointText").innerText = `[현재 포인트 ${point.toLocaleString()}]`;
@@ -612,6 +617,10 @@ window.checkCustomer = async function () {
 `;
       signupBtn.textContent = "신규";
       signupBtn.style.display = "inline-block";
+document.getElementById("birthInfoSection").style.display = "block";
+document.getElementById("customerLevel").style.display = "none";
+document.getElementById("currentPointText").innerText = "";
+
 
 // 신규 버튼 기능 연결
 signupBtn.onclick = async () => {
