@@ -560,30 +560,54 @@ window.checkCustomer = async function () {
       pointInfo.innerHTML = `<strong>[현재 포인트 ${point.toLocaleString()}]</strong>`;
     } else {
       pointInfo.innerHTML = `
-        <label>생년월일: <input type="date" id="newBirth2"></label><br/><br/>
-        <label>출생 시간: 
-          <select id="birthHour2">${[...Array(24).keys()].map(h => `<option value="${h}">${String(h).padStart(2, '0')}시</option>`).join('')}</select> :
-          <select id="birthMinute2">
-            <option value="모름">모름</option>
-            ${[...Array(60).keys()].map(m => `<option value="${m}">${String(m).padStart(2, '0')}분</option>`).join('')}
-          </select>
-        </label><br/><br/>
-        <label>성별: 
-          <select id="gender2">
-            <option value="">선택</option>
-            <option value="남">남</option>
-            <option value="여">여</option>
-          </select>
-        </label><br/><br/>
-      `;
+        <label>생년월일: 
+    <select id="birthYear">
+      ${Array.from({length: 100}, (_, i) => {
+        const year = new Date().getFullYear() - i;
+        return `<option value="${year}">${year}년</option>`;
+      }).join('')}
+    </select>
+    <select id="birthMonth">
+      ${Array.from({length: 12}, (_, i) => `<option value="${i + 1}">${String(i + 1).padStart(2, '0')}월</option>`).join('')}
+    </select>
+    <select id="birthDay">
+      ${Array.from({length: 31}, (_, i) => `<option value="${i + 1}">${String(i + 1).padStart(2, '0')}일</option>`).join('')}
+    </select>
+  </label><br/><br/>
+
+  <label>출생 시간: 
+    <span style="display: inline-flex; gap: 4px;">
+      <select id="birthHour2" style="width: 80px;">
+        <option value="모름">모름</option>
+        ${[...Array(24).keys()].map(h => `<option value="${h}">${String(h).padStart(2, '0')}시</option>`).join('')}
+      </select>
+      <select id="birthMinute2" style="width: 80px;">
+        <option value="모름">모름</option>
+        ${[...Array(60).keys()].map(m => `<option value="${m}">${String(m).padStart(2, '0')}분</option>`).join('')}
+      </select>
+    </span>
+  </label><br/><br/>
+
+  <label>성별: 
+    <select id="gender2">
+      <option value="">선택</option>
+      <option value="남">남</option>
+      <option value="여">여</option>
+    </select>
+  </label><br/><br/>
+`;
       signupBtn.textContent = "신규";
       signupBtn.style.display = "inline-block";
 
       // 신규 버튼 기능 연결
       signupBtn.onclick = async () => {
-        const birth = document.getElementById("newBirth2").value;
+        const year = document.getElementById("birthYear").value;
+const month = document.getElementById("birthMonth").value.padStart(2, '0');
+const day = document.getElementById("birthDay").value.padStart(2, '0');
+const birth = `${year}-${month}-${day}`;
         const hour = document.getElementById("birthHour2").value;
         const minute = document.getElementById("birthMinute2").value;
+const bornTime = (hour === "모름" || minute === "모름") ? "모름" : `${hour}:${minute}`;
         const gender = document.getElementById("gender2").value;
 
         if (!birth || !gender) {
