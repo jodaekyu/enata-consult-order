@@ -434,8 +434,12 @@ window.closePaymentPopup = function () {
     if (el) el.value = "";
   });
 
-   document.querySelector('#paymentPopup button[onclick="checkCustomer()"]').style.display = "inline-block";
-  document.querySelector('#paymentPopup button[onclick="openNewCustomerPopupFromPayment()"]').style.display = "none";
+ // 🔧 여기를 고쳤어요: 버튼이 있을 때만 스타일 변경
+  const confirmBtn = document.querySelector('#checkBtn');
+  if (confirmBtn) confirmBtn.style.display = "inline-block";
+
+  const signupBtn = document.querySelector('#paymentPopup button[onclick="openNewCustomerPopupFromPayment()"]');
+  if (signupBtn) signupBtn.style.display = "none";
 };
 
 
