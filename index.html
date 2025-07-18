@@ -138,20 +138,21 @@
 .row-input {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 8px;
 }
 
 .row-input label {
   width: 70px;
   font-size: 14px;
+  flex-shrink: 0;
 }
 
 .row-input input {
-  width: 50%;
+  flex: 1;
+  min-width: 0;
   height: 32px;
 }
-
 
   </style>
 </head>
