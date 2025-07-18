@@ -579,7 +579,7 @@ if (pointText) {
   levelEl.style.display = "inline";
   levelEl.innerText = "[고객 등급]"; // 또는 "[VIP]", "[일반]" 등 추후 설정
 
-      pointInfo.innerHTML = `<strong>[현재 포인트 ${point.toLocaleString()}]</strong>`;
+    
     } else {
       pointInfo.innerHTML = `
         <label>생년월일: 
