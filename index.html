@@ -201,15 +201,18 @@
     <h3>💳 결제창</h3>
 
   <!-- 고객 연락처 입력 + 확인 버튼 -->
-<div style="display: flex; align-items: center; gap: 8px;">
-  <label style="flex: 1; display: flex; flex-direction: column; font-size: 14px;">
-    고객 연락처
-    <input type="text" id="paymentPhone" placeholder="010-0000-0000" style="height: 36px;">
-  </label>
-  <button onclick="checkCustomer()" id="checkBtn" style="height: 36px;">확인</button>
-  <span id="customerLevel" style="font-size: 14px; color: gray; display: none;">[고객 등급]</span>
+<div style="display: flex; align-items: flex-end; gap: 8px;">
+  <div style="flex: 1;">
+    <label for="paymentPhone" style="font-size: 14px;">고객 연락처</label>
+    <input type="text" id="paymentPhone" placeholder="010-0000-0000" style="height: 36px; width: 100%; margin-top: 4px;">
+  </div>
+  <div style="display: flex; flex-direction: column; justify-content: flex-end;">
+    <button onclick="checkCustomer()" id="checkBtn" style="height: 36px;">확인</button>
+  </div>
+  <div>
+    <span id="customerLevel" style="font-size: 14px; color: gray; display: none;">[고객 등급]</span>
+  </div>
 </div>
-
     <div style="margin-top: 6px;">
       <button onclick="openNewCustomerPopupFromPayment()" id="signupBtn" style="display: none;">신규</button>
     </div>
