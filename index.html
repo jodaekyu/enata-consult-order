@@ -135,6 +135,23 @@
   }
 }
 
+.row-input {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.row-input label {
+  width: 70px;
+  font-size: 14px;
+}
+
+.row-input input {
+  width: 50%;
+  height: 32px;
+}
+
 
   </style>
 </head>
@@ -267,31 +284,32 @@
     </div>
 
   <!-- 💸 금액 입력 영역 (절반 폭) -->
-<div style="display: flex; align-items: center; gap: 8px;">
-  <label for="cashInput" style="width: 70px;">현금</label>
-  <input type="number" id="cashInput" placeholder="0원" style="width: 50%; height: 32px;">
+<div class="row-input">
+  <label for="cashInput">현금</label>
+  <input type="number" id="cashInput" placeholder="0원">
 </div>
-<div style="display: flex; align-items: center; gap: 8px;">
-  <label for="cardInput" style="width: 70px;">카드</label>
-  <input type="number" id="cardInput" placeholder="0원" style="width: 50%; height: 32px;">
+<div class="row-input">
+  <label for="cardInput">카드</label>
+  <input type="number" id="cardInput" placeholder="0원">
 </div>
-<div style="display: flex; align-items: center; gap: 8px;">
-  <label for="transferInput" style="width: 70px;">송금</label>
-  <input type="number" id="transferInput" placeholder="0원" style="width: 50%; height: 32px;">
+<div class="row-input">
+  <label for="transferInput">송금</label>
+  <input type="number" id="transferInput" placeholder="0원">
 </div>
-<div style="display: flex; align-items: center; gap: 8px;">
-  <label for="payInput" style="width: 70px;">페이</label>
-  <input type="number" id="payInput" placeholder="0원" style="width: 50%; height: 32px;">
+<div class="row-input">
+  <label for="payInput">페이</label>
+  <input type="number" id="payInput" placeholder="0원">
 </div>
-<div style="display: flex; align-items: center; gap: 8px;">
-  <label for="totalAmount" style="width: 70px;">합계</label>
-  <input type="text" id="totalAmount" readonly style="width: 50%; height: 32px;">
+<div class="row-input">
+  <label for="totalAmount">합계</label>
+  <input type="text" id="totalAmount" readonly>
 </div>
-<div style="display: flex; align-items: center; gap: 8px;">
-  <label for="earnedPoint" style="width: 70px;">포인트</label>
-  <input type="text" id="earnedPoint" readonly style="width: 50%; height: 32px;">
+<div class="row-input">
+  <label for="earnedPoint">포인트</label>
+  <input type="text" id="earnedPoint" readonly>
   <span id="currentPointText" style="font-size: 13px; color: gray; margin-left: 6px;"></span>
 </div>
+
 
 
 
