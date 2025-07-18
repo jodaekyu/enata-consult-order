@@ -179,20 +179,22 @@ function createTable(rows = 60) {
      let pressTimer;
 let longPress = false;
 
-// ✅ 1. 꾹 누르면 팝업 띄우기 (0.7초 이상)
 td.addEventListener("mousedown", () => {
   longPress = false;
   pressTimer = setTimeout(() => {
+    // 🔒 본인 칸인지 확인
+    const selectedName = nameRow.querySelectorAll("select.name")[j].value;
+    if (selectedName !== currentUserName) return;
+
     longPress = true;
-    openPaymentPopup(i, j); // 팝업 띄우기
+    openPaymentPopup(i, j);
   }, 700);
 });
 
-// ✅ 2. 짧게 클릭한 경우에만 상태 변경
 td.addEventListener("mouseup", () => {
   clearTimeout(pressTimer);
   if (!longPress) {
-    toggleType(td); // 일반 → 지명 → 예약 변경
+    toggleType(td); // 셀 상태 변경은 여전히 허용
   }
 });
 
