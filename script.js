@@ -537,7 +537,8 @@ window.openPaymentPopup = function (row, col) {
                    type === "designated" ? "지명" :
                    type === "reserved" ? "예약" : "미정";
 
-  document.getElementById("paymentPopup").querySelector("h3").textContent = `💳 [${typeText}] 결제 입력`;
+  document.getElementById("paymentPopup").querySelector("h3").textContent = `💳 결제창`;
+
 };
 
 // 확인 버튼 클릭 시
