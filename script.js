@@ -118,7 +118,9 @@ if (docSnap.exists()) {
   const adminPanel = document.getElementById("adminPanel");
   const revenueBtn = document.getElementById("revenueBtn");
 
-  if (adminPanel) adminPanel.style.display = "block";
+  if (adminPanel && role === "owner") {
+  adminPanel.style.display = "block";
+}
 
   if (role === "owner") {
     if (revenueBtn) revenueBtn.textContent = "전체 매출 보기";
