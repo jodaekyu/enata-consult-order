@@ -534,30 +534,27 @@ window.saveNewCustomer = async function () {
 
 window.openPaymentPopup = function (row, col) {
   const cell = tableBody.rows[row].cells[col + 1];
-  if (!cell || cell.className === "") {
-    alert("일반/지명/예약으로 먼저 선택해주세요.");
-    return;
-  }
+  const selectedName = nameRow.querySelectorAll("select.name")[col].value;
 
-  // 💡 모바일 기본 메뉴 방지
-  event?.preventDefault();
+  // 🔒 내 칸이 아니면 무반응
+  if (role !== "owner" && currentUserName !== selectedName) return;
 
-  // 💳 팝업 띄우기
+  // 🔒 일반/지명/예약 상태가 아니라면 무반응
+  if (!cell || cell.className === "") return;
+
+  // ✅ 정상일 때만 팝업 띄우기
   document.getElementById("paymentPopup").style.display = "block";
-
-  // 선택한 셀 정보 저장 (필요시 전역 변수로 저장 가능)
   document.getElementById("paymentPopup").dataset.row = row;
   document.getElementById("paymentPopup").dataset.col = col;
 
-  // 셀의 클래스 기반으로 결제 유형 힌트 (예: 일반/지명/예약)
   const type = cell.className;
   const typeText = type === "general" ? "일반" :
                    type === "designated" ? "지명" :
                    type === "reserved" ? "예약" : "미정";
 
   document.getElementById("paymentPopup").querySelector("h3").textContent = `💳 결제창`;
-
 };
+
 
 // 확인 버튼 클릭 시
 window.checkCustomer = async function () {
