@@ -434,8 +434,7 @@ window.closePaymentPopup = function () {
     if (el) el.value = "";
   });
 
-  document.getElementById("pointInfo").innerHTML = "";
-  document.querySelector('#paymentPopup button[onclick="checkCustomer()"]').style.display = "inline-block";
+   document.querySelector('#paymentPopup button[onclick="checkCustomer()"]').style.display = "inline-block";
   document.querySelector('#paymentPopup button[onclick="openNewCustomerPopupFromPayment()"]').style.display = "none";
 };
 
