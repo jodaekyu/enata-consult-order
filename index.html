@@ -200,13 +200,15 @@
   <div class="popup-content">
     <h3>💳 결제창</h3>
 
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <label style="flex: 1;">고객 연락처
-        <input type="text" id="paymentPhone" placeholder="010-0000-0000" style="height: 36px;">
-      </label>
-      <button onclick="checkCustomer()" id="checkBtn" style="height: 36px;">확인</button>
-      <span id="customerLevel" style="font-size: 14px; color: gray; display: none;">[고객 등급]</span>
-    </div>
+  <!-- 고객 연락처 입력 + 확인 버튼 -->
+<div style="display: flex; align-items: center; gap: 8px;">
+  <label style="flex: 1; display: flex; flex-direction: column; font-size: 14px;">
+    고객 연락처
+    <input type="text" id="paymentPhone" placeholder="010-0000-0000" style="height: 36px;">
+  </label>
+  <button onclick="checkCustomer()" id="checkBtn" style="height: 36px;">확인</button>
+  <span id="customerLevel" style="font-size: 14px; color: gray; display: none;">[고객 등급]</span>
+</div>
 
     <div style="margin-top: 6px;">
       <button onclick="openNewCustomerPopupFromPayment()" id="signupBtn" style="display: none;">신규</button>
