@@ -562,6 +562,15 @@ window.checkCustomer = async function () {
     if (snap.exists()) {
       const data = snap.data();
       const point = data.point || 0;
+
+// ✅ 포인트 텍스트 영역에 출력
+  document.getElementById("currentPointText").innerText = `[현재 포인트 ${point.toLocaleString()}]`;
+
+  // ✅ 고객 등급 표시 (등급 로직은 추후 반영)
+  const levelEl = document.getElementById("customerLevel");
+  levelEl.style.display = "inline";
+  levelEl.innerText = "[고객 등급]"; // 또는 "[VIP]", "[일반]" 등 추후 설정
+
       pointInfo.innerHTML = `<strong>[현재 포인트 ${point.toLocaleString()}]</strong>`;
     } else {
       pointInfo.innerHTML = `
